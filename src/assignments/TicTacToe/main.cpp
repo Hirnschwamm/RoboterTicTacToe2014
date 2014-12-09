@@ -1,16 +1,16 @@
 #include <Aria.h>
 #include <defaultrobotserver.h>
 
-#include<ActsAction.h>
+#include<TicTacToeAction.h>
 
 int main(int argc, char **argv) {
 
     DefaultRobotServer server;
     server.init(argc, argv);
 
-    ActsAction actsAction;
-    server.addAction(actsAction);
-    actsAction.activate();
+    TicTacToeAction tictactoeaction;
+    server.addAction(tictactoeaction);
+    tictactoeaction.activate();
 
     ArLog::log(ArLog::Normal, "run...");
     server.run();
