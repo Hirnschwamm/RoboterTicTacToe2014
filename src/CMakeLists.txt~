@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 2.8)
+
+project(robotik)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/../cmake/Modules/)
+
+find_package(Arnl)
+find_package(SonArnl)
+
+if(${Arnl_FOUND})
+    add_definitions(-DARNL)
+endif()
+if(${SonArnl_FOUND})
+    add_definitions(-DSONARNL)
+endif()
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
+
+add_subdirectory(robotServer)
+add_subdirectory(snippets)
+add_subdirectory(assignments)
+add_subdirectory(behaviourLibrary)
