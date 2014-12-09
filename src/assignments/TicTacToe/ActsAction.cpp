@@ -32,15 +32,6 @@ void ActsAction::deactivate(){
 }
 
 ArActionDesired *ActsAction::fire(ArActionDesired currentDesired){
- /*    if (acts.isConnected()) {
-            for (int channel = 1; channel <= acts.NUM_CHANNELS; ++channel)
-            {
-                printChannel(channel);
-            }
-        } else {
-            ArLog::log(ArLog::Normal, "Not connected to ACTS.");
-            this->deactivate();
-        }*/
 
     if (acts.isConnected()) {
 
