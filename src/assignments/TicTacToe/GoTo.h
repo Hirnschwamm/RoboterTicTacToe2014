@@ -1,11 +1,11 @@
 #include <Aria.h>
 #include "waypoint.h"
 
-class GoTo : public ArAction
+class GoTo
 {
 public:
     GoTo(std::vector<WayPoint*>* path, bool targetAngle = false);
-    virtual ArActionDesired *fire(ArActionDesired currentDesired);
+    virtual bool fire(ArActionDesired *myDesired);
 
 protected:
     ArActionDesired myDesired; // what the action wants to do
@@ -16,5 +16,6 @@ protected:
     int state;
     int stateTime;
     int wpPos;
+    ArRobot *myRobot;
     void stateChange(int change);
 };

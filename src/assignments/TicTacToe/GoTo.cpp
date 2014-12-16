@@ -1,20 +1,16 @@
 #include "GoTo.h"
 
-GoTo::GoTo(std::vector<WayPoint*>* path, bool targetAngle) :
-    ArAction("GoTo", "GoTo"),
-    path(path),
-    targetAngle(targetAngle),
-    state(0),
-    stateTime(0),
-    initDirection(true),
-    wpPos(0)
-{
+GoTo::GoTo(std::vector<WayPoint*>* path, bool targetAngle) {
+    this->path = path;
+    this->targetAngle= targetAngle;
+    this->state = 0;
+    this->stateTime = 0;
+    this->initDirection = true;
+    this->wpPos = 0;
 }
 
-ArActionDesired *GoTo::fire(ArActionDesired currentDesired)
+bool GoTo::fire(ArActionDesired *myDesired)
 {
-	myDesired.reset();
-
     int maxVel = 50;
     int minVel = 10;
 
@@ -31,7 +27,7 @@ ArActionDesired *GoTo::fire(ArActionDesired currentDesired)
     //if (myRobot->isHeadingDone()) {
         switch(state) {
             case 0: {
-                //myDesired.setHeading(targetHeading);
+                //myDesired->setHeading(targetHeading);
                 int turnDir = 1;
                 //if (curPos.getTh() > targetHeading) turnDir = -1;
 
@@ -45,7 +41,7 @@ ArActionDesired *GoTo::fire(ArActionDesired currentDesired)
                 if (turnSpeed > 0 && turnSpeed < 3) turnSpeed = 3;
                 if (turnSpeed < 0 && turnSpeed > -3) turnSpeed = -3;
 
-                myDesired.setRotVel(turnSpeed * turnDir);
+                myDesired->setRotVel(turnSpeed * turnDir);
                 if (curPos.getTh() > targetHeading - 1 && curPos.getTh() < targetHeading + 1) stateChange(1);
                 if (stateTime > 30) stateChange(2);
                 break;
@@ -64,7 +60,7 @@ ArActionDesired *GoTo::fire(ArActionDesired currentDesired)
             case 2: {
                 if (curPos.getTh() < targetHeading - 1|| curPos.getTh() > targetHeading + 1) {
                     stateChange(-2);
-                    //myDesired.setVel(0);
+                    //myDesired->setVel(0);
                 } else {
                     int targetVel = minVel;
                     if (dist > maxVel * 2) {
@@ -75,14 +71,14 @@ ArActionDesired *GoTo::fire(ArActionDesired currentDesired)
                         targetVel = 0;
                         stateChange(1);
                     }
-                    myDesired.setVel(targetVel);
+                    myDesired->setVel(targetVel);
                 }
                 break;
             }
 
             case 3: {
                 if (targetAngle) {
-                    myDesired.setHeading((double) target.getTh());
+                    myDesired->setHeading((double) target.getTh());
                      if(curPos.getTh() > target.getTh() - 2 && curPos.getTh() < target.getTh() + 2) stateChange(1);
                 } else {
                     stateChange(2);
@@ -103,8 +99,9 @@ ArActionDesired *GoTo::fire(ArActionDesired currentDesired)
                 if (wpPos > path->size() - 1) {
                     stateChange(1);
                     ArLog::log(ArLog::Normal, "Done.");
+                    return true;
                 } else {
-                    ArLog::log(ArLog::Normal, "reached %i (%i) %ix%i", wpPos, curWp->id, curWp->x, curWp->y);
+                    ArLog::log(ArLog::Normal, "reached %i/%i (%i) %ix%i", wpPos, path->size(), curWp->id, curWp->x, curWp->y);
                     wpPos++;
                     stateChange(-5);
                 }
@@ -122,7 +119,7 @@ ArActionDesired *GoTo::fire(ArActionDesired currentDesired)
     /*
     if (myRobot->isHeadingDone()) {
         if (curPos.getTh() < targetHeading - 1 || curPos.getTh() > targetHeading + 1) {
-            myDesired.setHeading(targetHeading);
+            myDesired->setHeading(targetHeading);
         } else if (dist > 10) {
             state = 1;
             int targetVel = minVel;
@@ -131,17 +128,17 @@ ArActionDesired *GoTo::fire(ArActionDesired currentDesired)
             } else if (dist > minVel) {
                 targetVel = dist;
             }
-            myDesired.setVel(targetVel);
+            myDesired->setVel(targetVel);
         } else if(targetAngle && (curPos.getTh() < target.getTh() - 2 || curPos.getTh() > target.getTh() + 2)) {
             state = 2;
-            myDesired.setHeading((double) target.getTh());
+            myDesired->setHeading((double) target.getTh());
         }
 
         if (dist < 10) {
             if (path->size() > wpPos + 1) {
                 wpPos++;
             } else {
-                myDesired.setVel(0);
+                myDesired->setVel(0);
                 printf("Done.");
             }
         }
@@ -150,7 +147,7 @@ ArActionDesired *GoTo::fire(ArActionDesired currentDesired)
     */
 
 
-    return &myDesired;
+    return false;
 }
 
 void GoTo::stateChange(int change) {
