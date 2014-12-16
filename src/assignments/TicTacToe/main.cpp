@@ -8,6 +8,8 @@ int main(int argc, char **argv) {
     DefaultRobotServer server;
     server.init(argc, argv);
 
+    printf("asfdsdfgsd\n");
+
     ActsAction actsAction;
     server.addAction(actsAction);
     actsAction.activate();
