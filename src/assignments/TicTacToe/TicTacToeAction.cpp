@@ -2,10 +2,11 @@
 #include <TTTIdle.h>
 
 
-TicTacToeAction::TicTacToeAction(bool robotStarts) : ArAction("TicTacToeAction", "A game of Tic Tac Toe")
+TicTacToeAction::TicTacToeAction(bool robotStarts, std::vector<std::vector<WayPoint> >* waypoints) : ArAction("TicTacToeAction", "A game of Tic Tac Toe")
 {
     state = NULL;
     this->robotStarts = robotStarts;
+    this->waypoints = waypoints;
 }
 
 TicTacToeAction::~TicTacToeAction(){
@@ -28,13 +29,13 @@ void TicTacToeAction::deactivate(){
 }
 
 ArActionDesired* TicTacToeAction::fire(ArActionDesired currentDesired){
-
+    myDesired.reset();
     if(state){
-        state->fire(&currentDesired);
+        state->fire(&myDesired);
     }else{
         printf("No State!\n");
     }
-    return 0;
+    return &myDesired;
 }
 
 TicTacToeState* TicTacToeAction::getState(){
@@ -51,6 +52,14 @@ void TicTacToeAction::setState(TicTacToeState* newState){
 
 ArACTS_1_2* TicTacToeAction::getActs(){
     return &acts;
+}
+
+TTTField* TicTacToeAction::getField(){
+    return &field;
+}
+
+std::vector<std::vector<WayPoint> >* TicTacToeAction::getWaypoints(){
+    return waypoints;
 }
 
 void TicTacToeAction::printBlobInfo(ArACTSBlob &blob){

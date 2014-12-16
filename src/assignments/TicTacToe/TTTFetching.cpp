@@ -31,7 +31,7 @@ void TTTFetching::fire(ArActionDesired* currentDesired){
         }
     }break;
     case(FETCHING):
-        if(this->findAndLift.fire()){
+        if(this->findAndLift.fire(currentDesired)){
             printf("STATETRANSITION: FETCHING--->PLACING\n");
             //TODO: Set state to "Placing", not idle!
             this->action->setState(new TTTIdle(myRobot, action, false));

@@ -4,13 +4,15 @@
 #include <ArAction.h>
 #include <TicTacToeState.h>
 #include <ArACTS.h>
+#include <tttfield.h>
+#include <waypoint.h>
 
 class TicTacToeState;
 
 class TicTacToeAction : public ArAction
 {
 public:
-    TicTacToeAction(bool robotStarts);
+    TicTacToeAction(bool robotStarts, std::vector<std::vector<WayPoint> >* waypoints);
     ~TicTacToeAction();
 
     virtual void activate();
@@ -23,12 +25,23 @@ public:
 
     ArACTS_1_2* getActs();
 
+    TTTField* getField();
+
+    std::vector<std::vector<WayPoint> >* getWaypoints();
+
     void printBlobInfo(ArACTSBlob &blob);
 
 private:
-    TicTacToeState* state;
     bool robotStarts;
+
+    TTTField field;
+
+    std::vector<std::vector<WayPoint> >* waypoints;
+
+    TicTacToeState* state;
     ArACTS_1_2 acts;
+
+    ArActionDesired myDesired;
 };
 
 #endif // TICTACTOEACTION_H

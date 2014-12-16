@@ -20,7 +20,7 @@ public:
     FindAndLift(ArRobot* myRobot, ArACTS_1_2* acts);
     ~FindAndLift();
 
-    bool fire();
+    bool fire(ArActionDesired* currentDesired);
 
     virtual void activate();
     virtual void deactivate();

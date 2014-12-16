@@ -31,7 +31,7 @@ void FindAndLift::deactivate(){
     acts->closePort();
 }
 
-bool FindAndLift::fire(){
+bool FindAndLift::fire(ArActionDesired* currentDesired){
 
     if (acts->isConnected()) {
 
