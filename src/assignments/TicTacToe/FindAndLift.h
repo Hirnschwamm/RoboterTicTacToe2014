@@ -1,7 +1,7 @@
 #ifndef ACTSACTION_H
 #define ACTSACTION_H
 
-#include<ArAction.h>
+#include<ArRobot.h>
 #include<ArACTS.h>
 #include<ArGripper.h>
 #include<ArSonyPTZ.h>
@@ -11,16 +11,16 @@
 
 #define focalLength 822
 
-enum STATE{IDLE, SEARCHING, ADJUSTING, APPROACHING, LIFTING, DONE};
+enum FINDANDLIFTSTATE{IDLE, SEARCHING, ADJUSTING, APPROACHING, LIFTING, DONE};
 
 
-class ActsAction : public ArAction
+class FindAndLift
 {
 public:
-    ActsAction();
-    ~ActsAction();
+    FindAndLift(ArRobot* myRobot, ArACTS_1_2* acts);
+    ~FindAndLift();
 
-    ArActionDesired *fire(ArActionDesired currentDesired);
+    bool fire();
 
     virtual void activate();
     virtual void deactivate();
@@ -29,12 +29,13 @@ public:
     void printBlobInfo(ArACTSBlob &blob);
 
 protected:
-    ArACTS_1_2 acts;
+    ArRobot* myRobot;
+    ArACTS_1_2* acts;
     ArACTSBlob blob;
     ArGripper* gripper;
     ArPTZ* ptz;
 
-    STATE state;
+    FINDANDLIFTSTATE state;
 
     float getDistance(float objectWidth){
         return (focalLength * objectWidth) / objectWidth;

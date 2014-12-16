@@ -1,52 +1,51 @@
-#include<ActsAction.h>
+#include<FindAndLift.h>
 
-ActsAction::ActsAction() :
-    ArAction("ActsAction", "Robot turns to object, approaches it, grabs it"){
-    state = IDLE;
+FindAndLift::FindAndLift(ArRobot* myRobot, ArACTS_1_2* acts){
+    this->myRobot = myRobot;
+    this->state = IDLE;
+    this->acts = acts;
+
+    this->activate();
 }
 
-ActsAction::~ActsAction(){
-    if(acts.isConnected()){
-        acts.closePort();
+FindAndLift::~FindAndLift(){
+    if(acts->isConnected()){
+        this->deactivate();
     }
 
     delete gripper;
 }
 
-void ActsAction::activate(){
+void FindAndLift::activate(){
 
-    ArLog::log(ArLog::Normal, "Activate!");
-    acts.openPort(myRobot);
-    ArAction::activate();
+    if(!acts->isConnected()){
+        acts->openPort(myRobot);
+    }
 
     gripper = new ArGripper(myRobot);
     ptz = myRobot->getPTZ();
 
 }
 
-void ActsAction::deactivate(){
-
-    acts.closePort();
-    ArAction::deactivate();
-
+void FindAndLift::deactivate(){
+    acts->closePort();
 }
 
-ArActionDesired *ActsAction::fire(ArActionDesired currentDesired){
+bool FindAndLift::fire(){
 
-    if (acts.isConnected()) {
+    if (acts->isConnected()) {
 
-        acts.getBlob(1, 1, &blob);
+        acts->getBlob(1, 1, &blob);
 
         switch(state){
             case(IDLE):{
                 myRobot->setVel(0.0);
                 myRobot->setRotVel(0.0);
-                ptz->tilt(0.0);
+                //ptz->tilt(0.0);
                 gripper->gripperDeploy();
 
-                if(acts.getNumBlobs(1) > 0){
+                if(acts->getNumBlobs(1) > 0){
                     state = ADJUSTING;
-
 
                     printBlobInfo(blob);
                 }else{
@@ -67,7 +66,7 @@ ArActionDesired *ActsAction::fire(ArActionDesired currentDesired){
                     state = APPROACHING;
                 }
 
-                if(acts.getNumBlobs(1) > 0){
+                if(acts->getNumBlobs(1) > 0){
                     state = ADJUSTING;
                 }
 
@@ -77,22 +76,22 @@ ArActionDesired *ActsAction::fire(ArActionDesired currentDesired){
             case(ADJUSTING):{
                 int xcg = blob.getXCG();
 
-                int margin = 3;
+                int marginLeft = 1;
+                int marginRight = 1;
                 int halfScreenW = SCREENWIDTH / 2;
 
                 printf("ADJUSTING: ");
 
-
                 //Object is centered and ready to be approached
-                if(xcg > (halfScreenW - margin) && xcg < (halfScreenW + margin)){
+                if(xcg > (halfScreenW - marginLeft) && xcg < (halfScreenW + marginRight)){
                     printf("FOUND OBJECT!\n");
-                    myRobot->setRotVel(0.0);
+                    myRobot->setRotVel(0.6);
                     state = APPROACHING;
                 //Object is not centered and robot position needs to be adjusted
-                }else if(xcg > (halfScreenW - margin) && xcg > (halfScreenW + margin)){
+                }else if(xcg > (halfScreenW - marginLeft) && xcg > (halfScreenW + marginRight)){
                   printf("TURNING RIGHT\n");
                   myRobot->setRotVel(-2.0);
-                }else if(xcg < (halfScreenW - margin) && xcg < (halfScreenW + margin)){
+                }else if(xcg < (halfScreenW - marginLeft) && xcg < (halfScreenW + marginRight)){
                    printf("TURNING LEFT\n");
                    myRobot->setRotVel(2.0);
                 }
@@ -101,15 +100,18 @@ ArActionDesired *ActsAction::fire(ArActionDesired currentDesired){
             case(APPROACHING):{
                 printf("APPROACHING!\n");
 
+                printf("%f\n", myRobot->getRotVel());
+
                 if(gripper->getBreakBeamState() == 3){
                    myRobot->setVel(0.0);
+                   myRobot->setRotVel(0.0);
                    state = LIFTING;
                 }else{
-                    myRobot->setVel(15.0);
+                    myRobot->setVel(25.0);
                 }
 
 
-                if(acts.getNumBlobs(1) == 0 && ptz->getTilt() >= -25.0f){
+                if(acts->getNumBlobs(1) == 0 && ptz->getTilt() >= -25.0f){
                     state = SEARCHING;
                 }
             }break;
@@ -120,27 +122,27 @@ ArActionDesired *ActsAction::fire(ArActionDesired currentDesired){
                 }
             }break;
             case(DONE):{
-                ptz->tilt(0.0);
+                return true;
             }break;
         }
 
     } else {
-        ArLog::log(ArLog::Normal, "Not connected to ACTS.");
+        ArLog::log(ArLog::Normal, "Not connected to acts->");
         this->deactivate();
     }
 
-    return 0;
+    return false;
 }
 
-void ActsAction::printChannel(int channel){
-    int numBlobs = acts.getNumBlobs(channel);
+void FindAndLift::printChannel(int channel){
+    int numBlobs = acts->getNumBlobs(channel);
     if (numBlobs > 0) {
         ArLog::log(ArLog::Normal, "%d blobs in channel %d", numBlobs, channel);
     }
 
     for (int i = 0; i < numBlobs; ++i) {
         int blobNo = i+1;
-        if(acts.getBlob(channel, blobNo, &blob)) {
+        if(acts->getBlob(channel, blobNo, &blob)) {
             ArLog::log(ArLog::Normal, " Blob %d:",blobNo);
             printBlobInfo(blob);
         } else {
@@ -149,7 +151,7 @@ void ActsAction::printChannel(int channel){
     }
 }
 
-void ActsAction::printBlobInfo(ArACTSBlob &blob){
+void FindAndLift::printBlobInfo(ArACTSBlob &blob){
 
     ArLog::log(ArLog::Normal, " Area: %d",blob.getArea());
     ArLog::log(ArLog::Normal, " BoundingBox: (%d, %d, %d, %d)",

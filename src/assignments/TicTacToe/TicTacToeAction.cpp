@@ -1,18 +1,25 @@
 #include "TicTacToeAction.h"
-#include <TTTIdlestate.h>
+#include <TTTIdle.h>
 
 
-TicTacToeAction::TicTacToeAction() : ArAction("TicTacToeAction", "A game of Tic Tac Toe")
+TicTacToeAction::TicTacToeAction(bool robotStarts) : ArAction("TicTacToeAction", "A game of Tic Tac Toe")
 {
     state = NULL;
+    this->robotStarts = robotStarts;
 }
 
 TicTacToeAction::~TicTacToeAction(){
-   delete state;
+    acts.closePort();
+    ArAction::deactivate();
+    delete state;
 }
 
 void TicTacToeAction::activate(){
-    setState(new TTTIdleState(this->myRobot, this));
+    printf("TicTacToe: Activate. State: IDLE");
+
+    acts.openPort(myRobot);
+
+    setState(new TTTIdle(this->myRobot, this, robotStarts));
     ArAction::activate();
 }
 
@@ -21,6 +28,7 @@ void TicTacToeAction::deactivate(){
 }
 
 ArActionDesired* TicTacToeAction::fire(ArActionDesired currentDesired){
+
     if(state){
         state->fire(&currentDesired);
     }else{
@@ -40,3 +48,18 @@ void TicTacToeAction::setState(TicTacToeState* newState){
 
     this->state = newState;
 }
+
+ArACTS_1_2* TicTacToeAction::getActs(){
+    return &acts;
+}
+
+void TicTacToeAction::printBlobInfo(ArACTSBlob &blob){
+
+    ArLog::log(ArLog::Normal, " Area: %d",blob.getArea());
+    ArLog::log(ArLog::Normal, " BoundingBox: (%d, %d, %d, %d)",
+    blob.getTop(), blob.getLeft(), blob.getBottom(), blob.getRight());
+    ArLog::log(ArLog::Normal, " Position: (%d, %d)",
+    blob.getXCG(), blob.getYCG());
+
+}
+

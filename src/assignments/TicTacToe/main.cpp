@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
     DefaultRobotServer server;
     server.init(argc, argv);
 
-    TicTacToeAction tictactoeaction;
+    TicTacToeAction tictactoeaction(true);
     server.addAction(tictactoeaction);
     tictactoeaction.activate();
 
