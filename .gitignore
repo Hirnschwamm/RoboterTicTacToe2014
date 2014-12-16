@@ -37,6 +37,8 @@ src/assignments/*.txt
 src/assignments/*~
 src/assignments/TicTacToe/*.txt
 src/assignments/TicTacToe/*~
+src/CMakeLists.txt*
+src/CMakeLists.txt.user
 src-build/
 bin/
 cmake/

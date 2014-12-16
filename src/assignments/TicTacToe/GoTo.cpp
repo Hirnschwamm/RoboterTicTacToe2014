@@ -15,7 +15,7 @@ ArActionDesired *GoTo::fire(ArActionDesired currentDesired)
 {
 	myDesired.reset();
 
-    int maxVel = 20;
+    int maxVel = 50;
     int minVel = 10;
 
     WayPoint* curWp = (*path)[wpPos];
@@ -40,6 +40,8 @@ ArActionDesired *GoTo::fire(ArActionDesired currentDesired)
                 //    turnSpeed *= -1;
                 //    turnDir = 1;
                 //}
+                if (turnSpeed > 0) turnSpeed = 5;
+                if (turnSpeed < 0) turnSpeed = -5;
                 if (turnSpeed > 0 && turnSpeed < 3) turnSpeed = 3;
                 if (turnSpeed < 0 && turnSpeed > -3) turnSpeed = -3;
 

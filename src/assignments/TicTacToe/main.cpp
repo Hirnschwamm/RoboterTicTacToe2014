@@ -2,11 +2,17 @@
 #include <defaultrobotserver.h>
 
 #include<TicTacToeAction.h>
+#include<waypoint.h>
+#include<PathUtil.h>
+#include<GoTo.h>
 
 int main(int argc, char **argv) {
 
     DefaultRobotServer server;
     server.init(argc, argv);
+
+    ArMap* map = server.getMap();
+    ArRobot *robot = server.getRobot();
 
     std::vector<WayPoint*> all1d;
     std::vector<std::vector<WayPoint> > wayPoints;
@@ -39,7 +45,7 @@ int main(int argc, char **argv) {
             if (x - 1 > -1                           && !wayPoints[x - 1][y].blocked)   wayPoints[x][y].wayPoints.push_back(&wayPoints[x - 1][y]);
             if (y + 1 < (int) wayPoints[x].size()    && !wayPoints[x][y + 1].blocked)   wayPoints[x][y].wayPoints.push_back(&wayPoints[x][y + 1]);
             if (y - 1 > -1                           && !wayPoints[x][y - 1].blocked)   wayPoints[x][y].wayPoints.push_back(&wayPoints[x][y - 1]);
-            ArLog::log(ArLog::Normal, "%i (%i): %ix%i", wayPoints[x][y].id, wayPoints[x][y].blocked, wayPoints[x][y].x, wayPoints[x][y].y);
+            //ArLog::log(ArLog::Normal, "%i (%i): %ix%i", wayPoints[x][y].id, wayPoints[x][y].blocked, wayPoints[x][y].x, wayPoints[x][y].y);
             //wayPoints[grid.X][grid.Y].listConnections();
         }
     }
@@ -71,9 +77,9 @@ int main(int argc, char **argv) {
     server.addAction(gotoObj, 49);
     gotoObj.activate();
 
-    TicTacToeAction tictactoeaction(true);
+    /*TicTacToeAction tictactoeaction(true);
     server.addAction(tictactoeaction);
-    tictactoeaction.activate();
+    tictactoeaction.activate();*/
 
     ArLog::log(ArLog::Normal, "run...");
     server.run();

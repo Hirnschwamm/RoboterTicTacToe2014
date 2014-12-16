@@ -1,4 +1,5 @@
 #include "PathUtil.h"
+#include <iostream>
 
 PathUtil::PathUtil()
 {
@@ -6,6 +7,7 @@ PathUtil::PathUtil()
 }
 
 void PathUtil::init(ArMap *map, std::vector<WayPoint*> *all1d) {
+    printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!AOSIDJHOAISDHJOIADHO\n\n\n");
     ArLog::log(ArLog::Normal, "Goals: %i", map->findMapObjectsOfType("goal").size());
 
     std::list<ArMapObject*> mapPoints = map->findMapObjectsOfType("goal");
@@ -70,7 +72,7 @@ void PathUtil::init(ArMap *map, std::vector<WayPoint*> *all1d) {
             all1d->at(index)->blocked = tmpWayPoints[x][y].blocked;
             index++;
             //tmpVec.push_back(&tmpWayPoints[x][y]);
-            //printf("Cur: %i, %i, %i\n", x, y, (long) (*(*wayPoints)[x])[y]);
+            printf("Cur: %i, %i, %i\n", x, y, tmpWayPoints[x][y].id);
             //ArLog::log(ArLog::Normal, "%i: %ix%i", (*(*wayPoints)[x])[y]->id, x, y);
             //(*(*wayPoints)[x])[y]->listConnections();
         }
