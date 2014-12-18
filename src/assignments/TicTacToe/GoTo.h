@@ -1,5 +1,6 @@
 #include <Aria.h>
 #include "waypoint.h"
+#include <math.h>
 
 class GoTo
 {

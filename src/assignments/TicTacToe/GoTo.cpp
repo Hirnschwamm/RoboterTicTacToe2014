@@ -19,9 +19,10 @@ bool GoTo::fire(ArActionDesired *myDesired)
     target = curWp->getPose();
     ArPose curPos = myRobot->getPose();
 
-    double targetHeading = curPos.findAngleTo(target);
+    //double targetHeading = curPos.findAngleTo(target);
+    double targetHeading = atan2(curPos.getY() - target.getY(), curPos.getX() - target.getX()) * (180 / M_PI);
     double dist = curPos.findDistanceTo(target);
-    //ArLog::log(ArLog::Normal, "I'm at: %ix%i; %i / %i; %i", (int) curPos.getX(), (int) curPos.getY(), (int) curPos.getTh(), (int) targetHeading, (int) dist);
+    ArLog::log(ArLog::Normal, "I'm at: %ix%i; %i / %i; %i", (int) curPos.getX(), (int) curPos.getY(), (int) curPos.getTh(), (int) targetHeading, (int) dist);
 
 
     //if (myRobot->isHeadingDone()) {
@@ -36,8 +37,8 @@ bool GoTo::fire(ArActionDesired *myDesired)
                 //    turnSpeed *= -1;
                 //    turnDir = 1;
                 //}
-                if (turnSpeed > 0) turnSpeed = 5;
-                if (turnSpeed < 0) turnSpeed = -5;
+                if (turnSpeed > 5) turnSpeed = 5;
+                if (turnSpeed < -5) turnSpeed = -5;
                 if (turnSpeed > 0 && turnSpeed < 3) turnSpeed = 3;
                 if (turnSpeed < 0 && turnSpeed > -3) turnSpeed = -3;
 

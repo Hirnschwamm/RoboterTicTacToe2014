@@ -42,6 +42,13 @@ TTTPlacing::TTTPlacing(ArRobot* myRobot, TicTacToeAction* action) :
             pPos.x = end.x + (dPos.x * .25);
             pPos.y = end.y + (dPos.y * .25);
         }
+
+        finalPath.push_back(&pPos);
+
+        for (int i = 0; i < finalPath.size(); i++) {
+            printf("%i. WP: %ix%i\n", i, (int) finalPath[i]->x, finalPath[i]->y);
+        }
+
         myGoto = new GoTo(&finalPath, myRobot, false);
 }
 

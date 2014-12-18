@@ -26,7 +26,7 @@ Cairn: Goal -1925 2075 0.000000 "middleLeft" ICON "3"
 Cairn: Goal -1075 250 0.000000 "upperRight" ICON "8"
 Cairn: Goal -1075 1225 0.000000 "upperMid" ICON "7"
 Cairn: Goal -1075 2075 0.000000 "upperLeft" ICON "6"
-Cairn: RobotHome 0 0 90.000000 "" ICON ""
+Cairn: RobotHome 0 0 0.000000 "" ICON ""
 LINES
 -3950 -500 550 -500
 -3950 3000 -3950 -500
