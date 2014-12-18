@@ -9,6 +9,12 @@ WayPoint::WayPoint(int x, int y, int id) :
 {
 }
 
+WayPoint::WayPoint() {
+    x = 0;
+    y = 0;
+    id = -1;
+}
+
 bool WayPoint::nearby(WayPoint other, int dist) {
     if (distance(other) > dist) return false;
     return true;

@@ -8,6 +8,7 @@ class WayPoint
 {
 public:
     WayPoint(int x, int y, int id);
+    WayPoint();
     bool nearby(WayPoint other, int dist);
     double distance(WayPoint other);
     ArPose getPose();
