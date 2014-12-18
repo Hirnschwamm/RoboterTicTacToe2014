@@ -1,12 +1,13 @@
 #include "GoTo.h"
 
-GoTo::GoTo(std::vector<WayPoint*>* path, bool targetAngle) {
+GoTo::GoTo(std::vector<WayPoint*>* path, ArRobot *robot, bool targetAngle) {
     this->path = path;
     this->targetAngle= targetAngle;
     this->state = 0;
     this->stateTime = 0;
     this->initDirection = true;
     this->wpPos = 0;
+    this->myRobot = robot;
 }
 
 bool GoTo::fire(ArActionDesired *myDesired)
@@ -20,7 +21,6 @@ bool GoTo::fire(ArActionDesired *myDesired)
 
     double targetHeading = curPos.findAngleTo(target);
     double dist = curPos.findDistanceTo(target);
-
     //ArLog::log(ArLog::Normal, "I'm at: %ix%i; %i / %i; %i", (int) curPos.getX(), (int) curPos.getY(), (int) curPos.getTh(), (int) targetHeading, (int) dist);
 
 
