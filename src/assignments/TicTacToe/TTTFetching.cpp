@@ -1,5 +1,6 @@
 #include "TTTFetching.h"
 #include "TTTIdle.h"
+#include <TTTReturning.h>
 
 TTTFetching::TTTFetching() :
     TicTacToeState(NULL, NULL),
@@ -25,7 +26,7 @@ TTTFetching::~TTTFetching(){
 void TTTFetching::fire(ArActionDesired* currentDesired){
     switch(state){
     case(TURNING):{
-        myRobot->setRotVel(-2.0f);
+        myRobot->setRotVel(2.0f);
         if(action->getActs()->getNumBlobs(ROBOTPIECESCHANNEL) > 0){
             state = FETCHING;
         }
@@ -33,8 +34,8 @@ void TTTFetching::fire(ArActionDesired* currentDesired){
     case(FETCHING):
         if(this->findAndLift.fire(currentDesired)){
             printf("STATETRANSITION: FETCHING--->PLACING\n");
-            //TODO: Set state to "Placing", not idle!
-            this->action->setState(new TTTIdle(myRobot, action, false));
+            //this->action->setState(new TTTPlacing(myRobot, action));
+            this->action->setState(new TTTReturning(myRobot, action));
         };
         break;
     }

@@ -29,10 +29,14 @@ public:
 
     std::vector<std::vector<WayPoint> >* getWaypoints();
 
+    ArPose getStartPose();
+
     void printBlobInfo(ArACTSBlob &blob);
 
 private:
     bool robotStarts;
+
+    ArPose startPose;
 
     TTTField field;
 

@@ -5,6 +5,7 @@
 #include<waypoint.h>
 #include<PathUtil.h>
 #include<GoTo.h>
+#include<vector>
 
 int main(int argc, char **argv) {
 

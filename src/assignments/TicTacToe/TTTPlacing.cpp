@@ -1,4 +1,5 @@
 #include "TTTPlacing.h"
+#include<vector>
 
 TTTPlacing::TTTPlacing() : TicTacToeState(NULL, NULL) {
     action->getField()->aiTurn(1, &targetX, &targetY);

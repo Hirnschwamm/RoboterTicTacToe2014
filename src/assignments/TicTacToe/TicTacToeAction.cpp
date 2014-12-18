@@ -5,6 +5,7 @@
 TicTacToeAction::TicTacToeAction(bool robotStarts, std::vector<std::vector<WayPoint> >* waypoints) : ArAction("TicTacToeAction", "A game of Tic Tac Toe")
 {
     state = NULL;
+    this->startPose = ArPose(0, 0, 0);
     this->robotStarts = robotStarts;
     this->waypoints = waypoints;
 }
@@ -58,6 +59,10 @@ TTTField* TicTacToeAction::getField(){
     return &field;
 }
 
+ArPose TicTacToeAction::getStartPose(){
+    return startPose;
+}
+
 std::vector<std::vector<WayPoint> >* TicTacToeAction::getWaypoints(){
     return waypoints;
 }
@@ -69,6 +74,5 @@ void TicTacToeAction::printBlobInfo(ArACTSBlob &blob){
     blob.getTop(), blob.getLeft(), blob.getBottom(), blob.getRight());
     ArLog::log(ArLog::Normal, " Position: (%d, %d)",
     blob.getXCG(), blob.getYCG());
-
 }
 

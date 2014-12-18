@@ -1,3 +1,6 @@
+#ifndef GOTO_H
+#define GOTO_H
+
 #include <Aria.h>
 #include "waypoint.h"
 #include <math.h>
@@ -20,3 +23,5 @@ protected:
     ArRobot *myRobot;
     void stateChange(int change);
 };
+
+#endif

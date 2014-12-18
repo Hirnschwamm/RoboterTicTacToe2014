@@ -94,7 +94,7 @@ bool PathUtil::findPath(WayPoint *start, WayPoint *end, std::vector<WayPoint*> *
     //ArLog::log(ArLog::Normal, "Call: %i", depth);
     WayPoint *curWp = (*path)[path->size() - 1];
     if (curWp == end) {
-        //ArLog::log(ArLog::Normal, "---Call: %i >? %i", (int) best->size(), (int) path->size());
+        ArLog::log(ArLog::Normal, "---Call: %i >? %i", (int) best->size(), (int) path->size());
         if (best->size() == 0 || path->size() < best->size()) {
             //ArLog::log(ArLog::Normal, "---Call: %i", path->size());
             best->clear();
