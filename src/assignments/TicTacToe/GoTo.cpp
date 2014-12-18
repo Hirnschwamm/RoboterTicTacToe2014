@@ -121,7 +121,7 @@ bool GoTo::fire(ArActionDesired *myDesired)
             }
 
             case 5: {
-                if (wpPos > path->size() - 1) {
+                if (wpPos > path->size() - 2) {
                     stateChange(1);
                     ArLog::log(ArLog::Normal, "Done.");
                     return true;
