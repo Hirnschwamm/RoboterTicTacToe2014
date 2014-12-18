@@ -1,11 +1,11 @@
 #include "TTTGameOver.h"
 
-TTTGameOver::TTTGameOver() : TicTacToeAction(NULL, NULL)
+TTTGameOver::TTTGameOver() : TicTacToeState(NULL, NULL)
 {
 }
 
 TTTGameOver::TTTGameOver(ArRobot *myRobot, TicTacToeAction *action) :
-    TicTacToeAction(myRobot, action){
+    TicTacToeState(myRobot, action){
 
 }
 

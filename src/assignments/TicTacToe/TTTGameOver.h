@@ -8,7 +8,7 @@ class TTTGameOver : public TicTacToeState
 {
 public:
     TTTGameOver();
-    TTTGameOver(ArRobot* myRobot, TicTacToeAction* action);
+    TTTGameOver(ArRobot *myRobot, TicTacToeAction *action);
 
     ~TTTGameOver();
 

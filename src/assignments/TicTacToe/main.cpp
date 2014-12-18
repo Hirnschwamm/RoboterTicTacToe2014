@@ -50,36 +50,9 @@ int main(int argc, char **argv) {
         }
     }
 
-    std::vector<WayPoint*> path;
-    std::vector<WayPoint*> bestPath;
-
-    std::vector<WayPoint*> finalPath;
-    WayPoint myPos((int)robot->getPose().getX(), (int)robot->getPose().getY(), -1);
-    WayPoint dest(-1750, -1600, -1);
-
-    WayPoint first(-1, -1, -1);
-    PathUtil::findNextWp(myPos.x, myPos.y, &first, &wayPoints);
-    path.push_back(&wayPoints[first.x][first.y]);
-
-    WayPoint last(-1, -1, -1);
-    PathUtil::findNextWp(dest.x, dest.y, &last, &wayPoints);
-
-    PathUtil::findPath(&wayPoints[first.x][first.y], &wayPoints[last.x][last.y], &path, &bestPath);
-
-    finalPath.push_back(&myPos);
-    for (int i = 0; i < bestPath.size(); i++) finalPath.push_back(bestPath[i]);
-    finalPath.push_back(&dest);
-
-    printf("Final, wps: %i\n", (int) finalPath.size());
-    for (int i = 0; i < finalPath.size(); i++) printf("%i (%i): %ix%i\n", i, finalPath[i]->id, finalPath[i]->x, finalPath[i]->y);
-
-    GoTo gotoObj(&finalPath, false);
-    server.addAction(gotoObj, 49);
-    gotoObj.activate();
-
-    /*TicTacToeAction tictactoeaction(true);
+    TicTacToeAction tictactoeaction(true);
     server.addAction(tictactoeaction);
-    tictactoeaction.activate();*/
+    tictactoeaction.activate();
 
     ArLog::log(ArLog::Normal, "run...");
     server.run();
