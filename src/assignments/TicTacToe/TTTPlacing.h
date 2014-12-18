@@ -24,6 +24,9 @@ private:
     GoTo *myGoto;
     std::vector<WayPoint*> finalPath;
     ArGripper *gripper;
+    WayPoint start;
+    WayPoint end;
+    WayPoint pPos;
 };
 
 #endif // TTTPLACING_H

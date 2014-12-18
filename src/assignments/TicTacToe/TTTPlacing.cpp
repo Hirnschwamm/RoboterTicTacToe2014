@@ -11,11 +11,14 @@ TTTPlacing::TTTPlacing(ArRobot* myRobot, TicTacToeAction* action) :
 
         gripper = new ArGripper(myRobot);
         //generate path
-        WayPoint start(myRobot->getPose().getX(), myRobot->getPose().getY(), -1);
+        start.x = myRobot->getPose().getX();
+        start.y = myRobot->getPose().getY();
+
         int tmpTargetX = targetX;
         int tmptargetY = targetY;
         while (tmpTargetX == 1 && tmptargetY == 1) action->getField()->randomEmpty(&tmpTargetX, &tmptargetY);
-        WayPoint end(action->getWaypoints()->at(tmpTargetX).at(tmptargetY).x, action->getWaypoints()->at(tmpTargetX).at(tmptargetY).y, -1);
+        end.x = action->getWaypoints()->at(tmpTargetX).at(tmptargetY).x;
+        end.y = action->getWaypoints()->at(tmpTargetX).at(tmptargetY).y;
         std::vector<WayPoint*> path;
         std::vector<WayPoint*> bestPath;
         finalPath.clear();
@@ -28,12 +31,11 @@ TTTPlacing::TTTPlacing(ArRobot* myRobot, TicTacToeAction* action) :
 
         path.push_back(&action->getWaypoints()->at(first.x).at(first.y));
         PathUtil::findPath(path[0], &action->getWaypoints()->at(last.x).at(last.y), &path, &bestPath);
-        finalPath.push_back(&start);
+        //finalPath.push_back(&start);
         for (int i = 0; i < bestPath.size(); i++) finalPath.push_back(bestPath[i]);
         finalPath.push_back(&end);
 
         WayPoint *center = &action->getWaypoints()->at(1).at(1);
-        WayPoint pPos(0, 0, -1);
         WayPoint dPos(center->x - end.x, center->y - end.y, -1);
         if (targetX == 1 && targetY == 1) {
             pPos.x = end.x + (dPos.x * .8);
