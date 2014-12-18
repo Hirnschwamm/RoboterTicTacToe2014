@@ -47,7 +47,7 @@ bool GoTo::fire(ArActionDesired *myDesired)
                 }
                 if (turnSpeed < 0) turnSpeed *= -1;
                 if (turnSpeed < 1) turnSpeed = 0;
-                //if (turnSpeed > 5) turnSpeed = 5;
+                if (turnSpeed > 5) turnSpeed = 5;
                 //if (turnSpeed < -5) turnSpeed = -5;
                 //if (turnSpeed > 0 && turnSpeed < 3) turnSpeed = 3;
                 //if (turnSpeed < 0 && turnSpeed > -3) turnSpeed = -3;
@@ -69,10 +69,23 @@ bool GoTo::fire(ArActionDesired *myDesired)
             }
 
             case 2: {
-                if (curPos.getTh() < targetHeading - 2 || curPos.getTh() > targetHeading + 2) {
+                if (curPos.getTh() < targetHeading - 10 || curPos.getTh() > targetHeading + 10) {
                     stateChange(-2);
                     //myDesired->setVel(0);
                 } else {
+                    int turnDir = 1;
+
+                    int turnSpeed = (targetHeading - curPos.getTh());
+                    if ((int)(myRobot->getTh() - targetHeading + 360) % 360>180) {
+                        turnDir = 1;
+                    } else {
+                        turnDir = -1;
+                    }
+                    if (turnSpeed < 0) turnSpeed *= -1;
+                    if (turnSpeed < 2) turnSpeed = 0;
+
+                    myDesired->setRotVel(turnSpeed * turnDir);
+
                     int targetVel = minVel;
                     if (dist > maxVel * 2) {
                         targetVel = maxVel;
