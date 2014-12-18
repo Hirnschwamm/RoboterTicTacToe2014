@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    TicTacToeAction tictactoeaction(true);
+    TicTacToeAction tictactoeaction(true, &wayPoints);
     server.addAction(tictactoeaction);
     tictactoeaction.activate();
 

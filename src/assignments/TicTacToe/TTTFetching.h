@@ -3,6 +3,7 @@
 
 #include <TicTacToeState.h>
 #include <FindAndLift.h>
+#include <TTTPlacing.h>
 
 #define ROBOTPIECESCHANNEL 1
 
