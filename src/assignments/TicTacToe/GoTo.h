@@ -1,10 +1,11 @@
 #include <Aria.h>
 #include "waypoint.h"
+#include <math.h>
 
 class GoTo
 {
 public:
-    GoTo(std::vector<WayPoint*>* path, bool targetAngle = false);
+    GoTo(std::vector<WayPoint*>* path, ArRobot *robot, bool targetAngle = false);
     virtual bool fire(ArActionDesired *myDesired);
 
 protected:
