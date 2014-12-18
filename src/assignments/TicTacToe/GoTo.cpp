@@ -12,17 +12,20 @@ GoTo::GoTo(std::vector<WayPoint*>* path, ArRobot *robot, bool targetAngle) {
 
 bool GoTo::fire(ArActionDesired *myDesired)
 {
-    int maxVel = 50;
+    int maxVel = 500;
     int minVel = 10;
 
     WayPoint* curWp = (*path)[wpPos];
     target = curWp->getPose();
     ArPose curPos = myRobot->getPose();
 
-    //double targetHeading = curPos.findAngleTo(target);
-    double targetHeading = atan2(curPos.getY() - target.getY(), curPos.getX() - target.getX()) * (180 / M_PI);
+    double targetHeading = curPos.findAngleTo(target);
+    //double targetHeading = atan2(curPos.getY() - target.getY(), curPos.getX() - target.getX()) * (180 / M_PI);
     double dist = curPos.findDistanceTo(target);
-    ArLog::log(ArLog::Normal, "I'm at: %ix%i; %i / %i; %i", (int) curPos.getX(), (int) curPos.getY(), (int) curPos.getTh(), (int) targetHeading, (int) dist);
+
+    //double targetHeading = acos((curPos.getY() - target.getY()) / dist)  * (180 / M_PI);
+
+    ArLog::log(ArLog::Normal, "I'm at: %ix%i; %i / %i; %ix%i", (int) curPos.getX(), (int) curPos.getY(), (int) curPos.getTh(), (int) targetHeading, (int) target.getX(), (int) target.getY());
 
 
     //if (myRobot->isHeadingDone()) {
@@ -37,10 +40,17 @@ bool GoTo::fire(ArActionDesired *myDesired)
                 //    turnSpeed *= -1;
                 //    turnDir = 1;
                 //}
-                if (turnSpeed > 5) turnSpeed = 5;
-                if (turnSpeed < -5) turnSpeed = -5;
-                if (turnSpeed > 0 && turnSpeed < 3) turnSpeed = 3;
-                if (turnSpeed < 0 && turnSpeed > -3) turnSpeed = -3;
+                if ((int)(myRobot->getTh() - targetHeading + 360) % 360>180) {
+                    turnDir = 1;
+                } else {
+                    turnDir = -1;
+                }
+                if (turnSpeed < 0) turnSpeed *= -1;
+                if (turnSpeed < 1) turnSpeed = 0;
+                //if (turnSpeed > 5) turnSpeed = 5;
+                //if (turnSpeed < -5) turnSpeed = -5;
+                //if (turnSpeed > 0 && turnSpeed < 3) turnSpeed = 3;
+                //if (turnSpeed < 0 && turnSpeed > -3) turnSpeed = -3;
 
                 myDesired->setRotVel(turnSpeed * turnDir);
                 if (curPos.getTh() > targetHeading - 1 && curPos.getTh() < targetHeading + 1) stateChange(1);
@@ -59,7 +69,7 @@ bool GoTo::fire(ArActionDesired *myDesired)
             }
 
             case 2: {
-                if (curPos.getTh() < targetHeading - 1|| curPos.getTh() > targetHeading + 1) {
+                if (curPos.getTh() < targetHeading - 2 || curPos.getTh() > targetHeading + 2) {
                     stateChange(-2);
                     //myDesired->setVel(0);
                 } else {
