@@ -74,11 +74,12 @@ void TTTPlacing::fire(ArActionDesired *currentDesired){
     case 3: { //change state
         printf("Placeing Done.");
         myState++;
+        action->setState(new TTTReturning(myRobot, action));
         break;
     }
 
     case 4: {
-
+        printf("Not to be printed");
         break;
     }
     }
