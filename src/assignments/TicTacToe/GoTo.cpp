@@ -12,7 +12,7 @@ GoTo::GoTo(std::vector<WayPoint*>* path, ArRobot *robot, bool targetAngle) {
 
 bool GoTo::fire(ArActionDesired *myDesired)
 {
-    int maxVel = 500;
+    int maxVel = 50;
     int minVel = 10;
 
     WayPoint* curWp = (*path)[wpPos];
