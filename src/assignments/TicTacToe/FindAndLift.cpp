@@ -85,7 +85,7 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
                 //Object is centered and ready to be approached
                 if(xcg > (halfScreenW - marginLeft) && xcg < (halfScreenW + marginRight)){
                     printf("FOUND OBJECT!\n");
-                    myRobot->setRotVel(0.6);
+                    myRobot->setRotVel(0.5);
                     state = APPROACHING;
                 //Object is not centered and robot position needs to be adjusted
                 }else if(xcg > (halfScreenW - marginLeft) && xcg > (halfScreenW + marginRight)){

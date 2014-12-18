@@ -20,6 +20,8 @@ public:
 private:
     GoTo* goTo;
     std::vector<WayPoint*> path;
+    WayPoint* startWayPointOnGraph;
+    WayPoint startWayPoint;
 };
 
 #endif // TTTRETURNING_H
