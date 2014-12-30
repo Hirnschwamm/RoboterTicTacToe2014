@@ -22,7 +22,7 @@ TTTReturning::TTTReturning(ArRobot *myRobot, TicTacToeAction *action):
 
     std::vector<WayPoint*> startPath;
     startPath.push_back(startWayPointOnGraph);
-    PathUtil::findPath(startWayPointOnGraph, robotWayPointOnGraph, &startPath, &path);
+    PathUtil::findPath(robotWayPointOnGraph, startWayPointOnGraph, &startPath, &path);
 
     path.push_back(&startWayPoint);
 
