@@ -36,9 +36,10 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
         break;
     case WAITINGFORCONFIRMATION:{
         ArACTSBlob piece;
-        action->getActs()->getBlob(PLAYERPIECESCHANNEL, newNumberOfPlayerPieces, &piece);
+        bool b = action->getActs()->getBlob(PLAYERPIECESCHANNEL, newNumberOfPlayerPieces, &piece);
 
-        int margin = 3;
+        if(b){
+        int margin = 30;
         if(std::abs(piece.getXCG() - newPiecePos[0]) < margin &&
            std::abs(piece.getYCG() - newPiecePos[1]) < margin   ){
             timer++;
@@ -51,10 +52,14 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
             state = CONFIRMATION;
         }
 
+        //printf("XCG: %d, newPiecePos: %d\n", piece.getXCG(), newPiecePos[0]);
+        //printf("%d\n", action->getActs()->getNumBlobs(PLAYERPIECESCHANNEL));
+        //printf("%d\n", b);
+
         newPiecePos[0] = piece.getXCG();
         newPiecePos[1] = piece.getYCG();
-
-        printf("WAITING: %d", timer);
+        }
+        printf("WAITING: %d\n", timer);
     }
         break;
     case CONFIRMATION:
@@ -79,6 +84,7 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
             action->getField()->field[fieldXPos][fieldYPos] = (action->getField()->turn() % 2);
 
             printf("STATETRANSITION: OBSERVING--->FETCHING\n");
+            printf("X:%d Y:%d\n", fieldXPos, fieldYPos);
             action->setState(new TTTFetching(myRobot, action));
         }
         break;
@@ -92,7 +98,7 @@ int TTTObserving::getDistanceTo(int w, int deltaX){
 
 void TTTObserving::getCellFromCoordinates(int x, int y, int *cellX, int *cellY){
     WayPoint wp;
-    PathUtil::findNextWp(x, y, &wp, action->getWaypoints());
+    PathUtil::findNextWpAll(x, y, &wp, action->getWaypoints());
 
     *cellX = wp.x;
     *cellY = wp.y;

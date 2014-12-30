@@ -6,7 +6,7 @@
 #include <TurnTo.h>
 #include <math.h>
 
-#define CONFIRMATIONTIME 1500
+#define CONFIRMATIONTIME 100
 #define FOCALLENGTH 822
 #define PLAYERPIECEWIDTH 12
 
