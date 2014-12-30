@@ -144,6 +144,26 @@ void PathUtil::findNextWp(int x, int y, WayPoint *wp, std::vector<std::vector<Wa
     }
 }
 
+void PathUtil::findNextWpAll(int x, int y, WayPoint *wp, std::vector<std::vector<WayPoint> > *wayPoints) {
+    WayPoint tmpWp(x, y, -1);
+
+    WayPoint grid(0, 0, 0);
+    wp->x = 0;
+    wp->y = 0;
+    for (grid.x = 0; grid.x < (int) (*wayPoints).size(); grid.x++) {
+        //printf("WP search: %i\n", (*wayPoints)[grid.x].size());
+        for (grid.y = 0; grid.y < (int) (*wayPoints)[grid.x].size(); grid.y++) {
+            //printf("WP search: %i\n", grid.y);
+            //ArLog::log(ArLog::Normal, "%i: %ix%i", (*wayPoints)[grid.x][grid.y].id, grid.x, grid.y);
+            if ((*wayPoints)[grid.x][grid.y].distance(tmpWp) < (*wayPoints)[wp->x][wp->y].distance(tmpWp)) {
+                wp->x = grid.x;
+                wp->y = grid.y;
+            }
+            //wayPoints[grid.X][grid.Y].listConnections();
+        }
+    }
+}
+
 int PathUtil::findNextWp(int x, int y, std::vector<WayPoint*> *allWps) {
     WayPoint tmpWp(x, y, -1);
     int best = 0;
