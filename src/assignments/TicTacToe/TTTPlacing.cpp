@@ -18,7 +18,7 @@ TTTPlacing::TTTPlacing(ArRobot* myRobot, TicTacToeAction* action) :
         int tmpTargetX = targetX;
         int tmpTargetY = targetY;
 
-        while (tmpTargetX == 1 && tmptargetY == 1) action->getField()->randomEmpty(&tmpTargetX, &tmptargetY);
+        while (tmpTargetX == 1 && tmpTargetY == 1) action->getField()->randomEmpty(&tmpTargetX, &tmpTargetY);
         end.x = action->getWaypoints()->at(tmpTargetX).at(tmpTargetY).x;
         end.y = action->getWaypoints()->at(tmpTargetX).at(tmpTargetY).y;
 

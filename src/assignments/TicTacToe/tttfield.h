@@ -19,6 +19,7 @@ public:
     void aiTurn(int level, int *moveX, int *moveY);
     void randomEmpty(int *moveX, int *moveY);
     void cornor(int *moveX, int *moveY, int m);
+    void debugPrint();
 	void reset();
 };
 
