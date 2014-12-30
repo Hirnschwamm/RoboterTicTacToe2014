@@ -11,7 +11,7 @@ class TTTReturning : public TicTacToeState
 {
 public:
     TTTReturning();
-    TTTReturning(ArRobot* myRobot, TicTacToeAction* action);
+    TTTReturning(ArRobot* myRobot, TicTacToeAction* action, WayPoint *firstWP);
 
     ~TTTReturning();
 

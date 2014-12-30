@@ -34,8 +34,8 @@ void TTTFetching::fire(ArActionDesired* currentDesired){
     case(FETCHING):
         if(this->findAndLift.fire(currentDesired)){
             printf("STATETRANSITION: FETCHING--->PLACING\n");
-            //this->action->setState(new TTTPlacing(myRobot, action));
-            this->action->setState(new TTTReturning(myRobot, action));
+            this->action->setState(new TTTPlacing(myRobot, action));
+            //this->action->setState(new TTTReturning(myRobot, action));
         };
         break;
     }

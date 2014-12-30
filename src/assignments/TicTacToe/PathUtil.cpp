@@ -13,7 +13,7 @@ void PathUtil::init(ArMap *map, std::vector<WayPoint*> *all1d) {
     std::list<ArMapObject*> mapPoints = map->findMapObjectsOfType("goal");
     std::list<ArMapObject*>::const_iterator iterator;
 
-    int distToField = 250;
+    int distToField = 200;
     std::vector<std::vector<WayPoint> > tmpWayPoints;
 
     //init TTT field
@@ -72,7 +72,7 @@ void PathUtil::init(ArMap *map, std::vector<WayPoint*> *all1d) {
             all1d->at(index)->blocked = tmpWayPoints[x][y].blocked;
             index++;
             //tmpVec.push_back(&tmpWayPoints[x][y]);
-            printf("Cur: %i, %i, %i\n", x, y, tmpWayPoints[x][y].id);
+            //printf("Cur: %i, %i, %i\n", x, y, tmpWayPoints[x][y].id);
             //ArLog::log(ArLog::Normal, "%i: %ix%i", (*(*wayPoints)[x])[y]->id, x, y);
             //(*(*wayPoints)[x])[y]->listConnections();
         }
@@ -94,7 +94,7 @@ bool PathUtil::findPath(WayPoint *start, WayPoint *end, std::vector<WayPoint*> *
     //ArLog::log(ArLog::Normal, "Call: %i", depth);
     WayPoint *curWp = (*path)[path->size() - 1];
     if (curWp == end) {
-        ArLog::log(ArLog::Normal, "---Call: %i >? %i", (int) best->size(), (int) path->size());
+        //ArLog::log(ArLog::Normal, "---Call: %i >? %i", (int) best->size(), (int) path->size());
         if (best->size() == 0 || path->size() < best->size()) {
             //ArLog::log(ArLog::Normal, "---Call: %i", path->size());
             best->clear();
@@ -136,6 +136,26 @@ void PathUtil::findNextWp(int x, int y, WayPoint *wp, std::vector<std::vector<Wa
             //printf("WP search: %i\n", grid.y);
             //ArLog::log(ArLog::Normal, "%i: %ix%i", (*wayPoints)[grid.x][grid.y].id, grid.x, grid.y);
             if (!(*wayPoints)[grid.x][grid.y].blocked && (*wayPoints)[grid.x][grid.y].distance(tmpWp) < (*wayPoints)[wp->x][wp->y].distance(tmpWp)) {
+                wp->x = grid.x;
+                wp->y = grid.y;
+            }
+            //wayPoints[grid.X][grid.Y].listConnections();
+        }
+    }
+}
+
+void PathUtil::findNextWpAll(int x, int y, WayPoint *wp, std::vector<std::vector<WayPoint> > *wayPoints) {
+    WayPoint tmpWp(x, y, -1);
+
+    WayPoint grid(0, 0, 0);
+    wp->x = 0;
+    wp->y = 0;
+    for (grid.x = 0; grid.x < (int) (*wayPoints).size(); grid.x++) {
+        //printf("WP search: %i\n", (*wayPoints)[grid.x].size());
+        for (grid.y = 0; grid.y < (int) (*wayPoints)[grid.x].size(); grid.y++) {
+            //printf("WP search: %i\n", grid.y);
+            //ArLog::log(ArLog::Normal, "%i: %ix%i", (*wayPoints)[grid.x][grid.y].id, grid.x, grid.y);
+            if ((*wayPoints)[grid.x][grid.y].distance(tmpWp) < (*wayPoints)[wp->x][wp->y].distance(tmpWp)) {
                 wp->x = grid.x;
                 wp->y = grid.y;
             }

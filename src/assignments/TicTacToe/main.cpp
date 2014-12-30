@@ -6,8 +6,12 @@
 #include<PathUtil.h>
 #include<GoTo.h>
 #include<vector>
+#include <time.h>
 
 int main(int argc, char **argv) {
+
+    /* initialize random seed: */
+    srand (time(NULL));
 
     DefaultRobotServer server;
     server.init(argc, argv);
@@ -46,7 +50,7 @@ int main(int argc, char **argv) {
             if (x - 1 > -1                           && !wayPoints[x - 1][y].blocked)   wayPoints[x][y].wayPoints.push_back(&wayPoints[x - 1][y]);
             if (y + 1 < (int) wayPoints[x].size()    && !wayPoints[x][y + 1].blocked)   wayPoints[x][y].wayPoints.push_back(&wayPoints[x][y + 1]);
             if (y - 1 > -1                           && !wayPoints[x][y - 1].blocked)   wayPoints[x][y].wayPoints.push_back(&wayPoints[x][y - 1]);
-            //ArLog::log(ArLog::Normal, "%i (%i): %ix%i", wayPoints[x][y].id, wayPoints[x][y].blocked, wayPoints[x][y].x, wayPoints[x][y].y);
+            ArLog::log(ArLog::Normal, "%i (%i): %ix%i", wayPoints[x][y].id, wayPoints[x][y].blocked, wayPoints[x][y].x, wayPoints[x][y].y);
             //wayPoints[grid.X][grid.Y].listConnections();
         }
     }
