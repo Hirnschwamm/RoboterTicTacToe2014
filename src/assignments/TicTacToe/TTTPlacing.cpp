@@ -72,14 +72,26 @@ void TTTPlacing::fire(ArActionDesired *currentDesired){
         if (!gripper->isLiftMoving() && !gripper->isGripMoving() && gripper->isLiftMaxed()) myState++;
     }
 
-    case 3: { //change state
+    case 3: {
+        ArPose myPose = myRobot->getPose();
+        ArPose *lastPose = finalPath.at(finalPath.size() -1);
+        if (myPose.findDistanceTo(*lastPose) < 200) {
+            myRobot->setVel(-50);
+        } else {
+            myRobot->setVel(0);
+            myState++;
+        }
+        break;
+    }
+
+    case 4: { //change state
         printf("Placeing Done.");
         myState++;
         action->setState(new TTTReturning(myRobot, action));
         break;
     }
 
-    case 4: {
+    case 5: {
         printf("Not to be printed");
         break;
     }
