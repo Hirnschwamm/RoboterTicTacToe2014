@@ -306,6 +306,20 @@ void TTTField::cornor(int *moveX, int *moveY, int m) {
     }
 }
 
+void TTTField::debugPrint()
+{
+    for (int y = 2; y > -1; y--) {
+        for (int x = 0; x < 3; x++) {
+            if (field[x][y] == -1) printf(" ");
+            if (field[x][y] == 0) printf("X");
+            if (field[x][y] == 1) printf("O");
+            if (x < 2) printf(" | ");
+        }
+        printf("\n");
+        if (y < 2) printf("---------\n");
+    }
+}
+
 void TTTField::reset() {
 	for (int x = 0; x < 3; x++) {
         for (int y = 0; y < 3; y++) {
