@@ -28,6 +28,7 @@ private:
     WayPoint start;
     WayPoint end;
     WayPoint pPos;
+    int ticks;
 };
 
 #endif // TTTPLACING_H

@@ -13,7 +13,7 @@ void PathUtil::init(ArMap *map, std::vector<WayPoint*> *all1d) {
     std::list<ArMapObject*> mapPoints = map->findMapObjectsOfType("goal");
     std::list<ArMapObject*>::const_iterator iterator;
 
-    int distToField = 250;
+    int distToField = 200;
     std::vector<std::vector<WayPoint> > tmpWayPoints;
 
     //init TTT field
@@ -72,7 +72,7 @@ void PathUtil::init(ArMap *map, std::vector<WayPoint*> *all1d) {
             all1d->at(index)->blocked = tmpWayPoints[x][y].blocked;
             index++;
             //tmpVec.push_back(&tmpWayPoints[x][y]);
-            printf("Cur: %i, %i, %i\n", x, y, tmpWayPoints[x][y].id);
+            //printf("Cur: %i, %i, %i\n", x, y, tmpWayPoints[x][y].id);
             //ArLog::log(ArLog::Normal, "%i: %ix%i", (*(*wayPoints)[x])[y]->id, x, y);
             //(*(*wayPoints)[x])[y]->listConnections();
         }
@@ -94,7 +94,7 @@ bool PathUtil::findPath(WayPoint *start, WayPoint *end, std::vector<WayPoint*> *
     //ArLog::log(ArLog::Normal, "Call: %i", depth);
     WayPoint *curWp = (*path)[path->size() - 1];
     if (curWp == end) {
-        ArLog::log(ArLog::Normal, "---Call: %i >? %i", (int) best->size(), (int) path->size());
+        //ArLog::log(ArLog::Normal, "---Call: %i >? %i", (int) best->size(), (int) path->size());
         if (best->size() == 0 || path->size() < best->size()) {
             //ArLog::log(ArLog::Normal, "---Call: %i", path->size());
             best->clear();

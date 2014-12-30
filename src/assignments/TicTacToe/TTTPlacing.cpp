@@ -2,13 +2,13 @@
 #include<vector>
 
 TTTPlacing::TTTPlacing() : TicTacToeState(NULL, NULL) {
-    action->getField()->aiTurn(1, &targetX, &targetY);
     myState = 0;
 }
 
 TTTPlacing::TTTPlacing(ArRobot* myRobot, TicTacToeAction* action) :
     TicTacToeState(myRobot, action){
         myState = 0;
+        action->getField()->aiTurn(1, &targetX, &targetY);
 
         gripper = new ArGripper(myRobot);
         //generate path
@@ -16,10 +16,14 @@ TTTPlacing::TTTPlacing(ArRobot* myRobot, TicTacToeAction* action) :
         start.y = myRobot->getPose().getY();
 
         int tmpTargetX = targetX;
-        int tmptargetY = targetY;
+        int tmpTargetY = targetY;
+
         while (tmpTargetX == 1 && tmptargetY == 1) action->getField()->randomEmpty(&tmpTargetX, &tmptargetY);
-        end.x = action->getWaypoints()->at(tmpTargetX).at(tmptargetY).x;
-        end.y = action->getWaypoints()->at(tmpTargetX).at(tmptargetY).y;
+        end.x = action->getWaypoints()->at(tmpTargetX).at(tmpTargetY).x;
+        end.y = action->getWaypoints()->at(tmpTargetX).at(tmpTargetY).y;
+
+        printf("Placing at %ix%i: %ix%i\n", targetX, targetY, end.x, end.y);
+
         std::vector<WayPoint*> path;
         std::vector<WayPoint*> bestPath;
         finalPath.clear();
@@ -34,7 +38,7 @@ TTTPlacing::TTTPlacing(ArRobot* myRobot, TicTacToeAction* action) :
         PathUtil::findPath(path[0], &action->getWaypoints()->at(last.x).at(last.y), &path, &bestPath);
         //finalPath.push_back(&start);
         for (int i = 0; i < bestPath.size(); i++) finalPath.push_back(bestPath[i]);
-        finalPath.push_back(&end);
+        //finalPath.push_back(&end);
 
         WayPoint *center = &action->getWaypoints()->at(1).at(1);
         WayPoint dPos(center->x - end.x, center->y - end.y, -1);
@@ -62,20 +66,31 @@ void TTTPlacing::fire(ArActionDesired *currentDesired){
         break;
     }
 
-    case 1: { //place token
-        gripper->gripperDeploy();
+    case 1: { //lower lift
+        gripper->liftDown();
+        ticks = 0;
         myState++;
         break;
     }
 
-    case 2: { // waiting for deploy to finish
+    case 2: { //place token
+        if (ticks < 100) {
+            ticks++;
+        } else {
+            gripper->gripperDeploy();
+            myState++;
+        }
+        break;
+    }
+
+    case 3: { // waiting for deploy to finish
         if (!gripper->isLiftMoving() && !gripper->isGripMoving() && gripper->isLiftMaxed()) myState++;
     }
 
-    case 3: {
+    case 4: { //Moving away from token
         ArPose myPose = myRobot->getPose();
-        ArPose *lastPose = finalPath.at(finalPath.size() -1);
-        if (myPose.findDistanceTo(*lastPose) < 200) {
+        ArPose lastPose = finalPath.at(finalPath.size() -1)->getPose();
+        if (myPose.findDistanceTo(lastPose) < 200) {
             myRobot->setVel(-50);
         } else {
             myRobot->setVel(0);
@@ -84,14 +99,15 @@ void TTTPlacing::fire(ArActionDesired *currentDesired){
         break;
     }
 
-    case 4: { //change state
+    case 5: { //change state
         printf("Placeing Done.");
         myState++;
-        action->setState(new TTTReturning(myRobot, action));
+        printf("STATETRANSITION: PLACEING--->RETURNING\n");
+        action->setState(new TTTReturning(myRobot, action, finalPath.at(finalPath.size() - 2)));
         break;
     }
 
-    case 5: {
+    case 6: {
         printf("Not to be printed");
         break;
     }

@@ -84,8 +84,10 @@ bool GoTo::fire(ArActionDesired *myDesired)
                     }
                     if (turnSpeed < 0) turnSpeed *= -1;
                     if (turnSpeed < 2) turnSpeed = 0;
+                    if (turnSpeed < 1) turnSpeed = 0;
+                    if (turnSpeed > 5) turnSpeed = 5;
 
-                    myDesired->setRotVel(turnSpeed * turnDir);
+                    myRobot->setRotVel(turnSpeed * turnDir);
 
                     int targetVel = minVel;
                     if (dist > maxVel * 2) {
@@ -177,6 +179,6 @@ bool GoTo::fire(ArActionDesired *myDesired)
 
 void GoTo::stateChange(int change) {
     state += change;
-    ArLog::log(ArLog::Normal, "Statechange: %i -> %i; after %i ticks", state - change, state, stateTime);
+    //ArLog::log(ArLog::Normal, "Statechange: %i -> %i; after %i ticks", state - change, state, stateTime);
     stateTime = 0;
 }
