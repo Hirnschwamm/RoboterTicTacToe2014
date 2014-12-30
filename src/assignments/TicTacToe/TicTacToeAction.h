@@ -7,6 +7,9 @@
 #include <tttfield.h>
 #include <waypoint.h>
 
+#define ROBOTPIECESCHANNEL 1
+#define PLAYERPIECESCHANNEL 2
+
 class TicTacToeState;
 
 class TicTacToeAction : public ArAction

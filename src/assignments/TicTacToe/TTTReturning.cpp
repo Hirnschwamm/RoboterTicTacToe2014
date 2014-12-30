@@ -39,6 +39,7 @@ void TTTReturning::fire(ArActionDesired *currentDesired){
 
     if(goTo->fire(currentDesired)){
         printf("STATETRANSITION: RETURNING--->OBSERVING\n");
-       action->setState(new TTTObserving(myRobot, action));
+        int numberOfCurrentPlayerPieces = action->getActs()->getNumBlobs(PLAYERPIECESCHANNEL);
+        action->setState(new TTTObserving(myRobot, action, numberOfCurrentPlayerPieces));
     }
 }

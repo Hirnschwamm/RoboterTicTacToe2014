@@ -2,20 +2,35 @@
 #define TTTOBSERVING_H
 
 #include <TicTacToeState.h>
+#include <ArACTS.h>
+#include <TurnTo.h>
+#include <math.h>
 
-//TODO: Implement Observerving!
+#define CONFIRMATIONTIME 1500
+#define FOCALLENGTH 822
+#define PLAYERPIECEWIDTH 12
+
+enum TTTOBSERVINGSTATE{OBSERVING, WAITINGFORCONFIRMATION, CONFIRMATION};
+
 class TTTObserving : public TicTacToeState
 {
 public:
     TTTObserving();
-    TTTObserving(ArRobot* myRobot, TicTacToeAction* action);
+    TTTObserving(ArRobot* myRobot, TicTacToeAction* action, int numberOfCurrentPlayerPieces);
 
     ~TTTObserving();
 
     void fire(ArActionDesired* currentDesired);
 
 private:
+    int numberOfCurrentPlayerPieces;
+    int newPiecePos[2];
+    int timer;
+    TurnTo turnTo;
+    TTTOBSERVINGSTATE state;
 
+    int getDistanceTo(int w, int deltaX);
+    void getCellFromCoordinates(int x, int y, int* cellX, int* cellY);
 };
 
 #endif // TTTOBSERVING_H
