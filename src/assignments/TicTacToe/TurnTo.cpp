@@ -18,7 +18,7 @@ bool TurnTo::fire(){
         int margin = 1;
         int xcg = blob.getXCG();
         int halfScreenW = SCREENWIDTH / 2;
-        int turnSpeed = 5.0;
+        int turnSpeed = 3.0;
         if(xcg > (halfScreenW - margin) && xcg < (halfScreenW + margin)){
             myRobot->setRotVel(0.0);
             return true;

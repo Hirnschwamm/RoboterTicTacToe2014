@@ -150,6 +150,7 @@ void PathUtil::findNextWpAll(int x, int y, WayPoint *wp, std::vector<std::vector
     WayPoint grid(0, 0, 0);
     wp->x = 0;
     wp->y = 0;
+
     for (grid.x = 0; grid.x < (int) (*wayPoints).size(); grid.x++) {
         //printf("WP search: %i\n", (*wayPoints)[grid.x].size());
         for (grid.y = 0; grid.y < (int) (*wayPoints)[grid.x].size(); grid.y++) {

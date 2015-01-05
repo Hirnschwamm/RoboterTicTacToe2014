@@ -55,6 +55,7 @@ int main(int argc, char **argv) {
         }
     }
 
+
     TicTacToeAction tictactoeaction(false, &wayPoints);
     server.addAction(tictactoeaction);
     tictactoeaction.activate();
