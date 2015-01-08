@@ -15,6 +15,7 @@ public:
     void fire(ArActionDesired* currentDesired);
 
     ArLaser *myLaser;
+    bool turn;
 };
 
 #endif // TTTSONARTEST_H
