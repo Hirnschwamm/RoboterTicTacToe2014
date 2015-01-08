@@ -1,4 +1,5 @@
 #include <Aria.h>
+#include <Arnl.h>
 #include <defaultrobotserver.h>
 
 #include<TicTacToeAction.h>
@@ -7,6 +8,7 @@
 #include<GoTo.h>
 #include<vector>
 #include <time.h>
+#include <pathtask.h>
 
 #include<iostream>
 
@@ -20,6 +22,8 @@ int main(int argc, char **argv) {
 
     ArMap* map = server.getMap();
     ArRobot *robot = server.getRobot();
+
+    ArPathPlanningTask* pt = server.getPathTask();
 
     std::vector<WayPoint*> all1d;
     std::vector<std::vector<WayPoint> > wayPoints;
@@ -57,8 +61,7 @@ int main(int argc, char **argv) {
         }
     }
 
-
-    TicTacToeAction tictactoeaction(false, &wayPoints);
+    TicTacToeAction tictactoeaction(false, &wayPoints, pt, map);
     server.addAction(tictactoeaction);
     tictactoeaction.activate();
     printf("run!\n");

@@ -2,24 +2,29 @@
 #include <TTTIdle.h>
 
 
-TicTacToeAction::TicTacToeAction(bool robotStarts, std::vector<std::vector<WayPoint> >* waypoints) : ArAction("TicTacToeAction", "A game of Tic Tac Toe")
+TicTacToeAction::TicTacToeAction(bool robotStarts, std::vector<std::vector<WayPoint> >* waypoints, ArPathPlanningTask* pt, ArMap* myMap) :
+    ArAction("TicTacToeAction", "A game of Tic Tac Toe")
 {
     state = NULL;
     this->startPose = ArPose(0, 0, 0);
     this->robotStarts = robotStarts;
     this->waypoints = waypoints;
+    this->pathPlanningTask = pt;
+    this->myMap = myMap;
+    this->pt = new PathTask(myRobot, pt, myMap, ArPose(0, 0, 0), this);
 }
 
 TicTacToeAction::~TicTacToeAction(){
+    delete pt;
     acts.closePort();
     ArAction::deactivate();
     delete state;
 }
 
 void TicTacToeAction::activate(){
-    printf("TicTacToe: Activate. State: IDLE");
+    //printf("TicTacToe: Activate. State: IDLE\n");
 
-    acts.openPort(myRobot);
+    //acts.openPort(myRobot);
 
     setState(new TTTIdle(this->myRobot, this, robotStarts));
     ArAction::activate();
@@ -74,5 +79,10 @@ void TicTacToeAction::printBlobInfo(ArACTSBlob &blob){
     blob.getTop(), blob.getLeft(), blob.getBottom(), blob.getRight());
     ArLog::log(ArLog::Normal, " Position: (%d, %d)",
     blob.getXCG(), blob.getYCG());
+}
+
+void TicTacToeAction::goTo(ArPose goal){
+    pt->setPose(goal);
+    myRobot->addUserTask("PathTask", 0, pt);
 }
 
