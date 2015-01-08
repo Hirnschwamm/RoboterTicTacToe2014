@@ -14,6 +14,7 @@ public:
 
 private:
     bool robotStarts;
+    int test;
 };
 
 #endif // TTTIDLESTATE_H

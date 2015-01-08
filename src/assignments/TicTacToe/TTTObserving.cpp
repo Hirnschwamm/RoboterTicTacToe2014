@@ -14,8 +14,8 @@ TTTObserving::TTTObserving(ArRobot *myRobot, TicTacToeAction *action, int number
     this->numberOfCurrentPlayerPieces = numberOfCurrentPlayerPieces;
     timer = 0;
 
-    ArSonyPTZ ptz = myRobot->getPTZ();
-    ptz.tilt(-15.0);
+    ArPTZ* ptz = myRobot->getPTZ();
+    ptz->tilt(-15.0);
 }
 
 TTTObserving::~TTTObserving(){
@@ -28,7 +28,7 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
     switch(state){
     case ALIGNING:
        if(myRobot->getTh() < 150){
-            myRobot->setRotVel(5.0);
+            myRobot->setHeading(150);
         }else{
             myRobot->setRotVel(0.0);
             state = OBSERVING;

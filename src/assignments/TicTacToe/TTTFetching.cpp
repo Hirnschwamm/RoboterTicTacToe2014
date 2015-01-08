@@ -26,8 +26,8 @@ TTTFetching::~TTTFetching(){
 void TTTFetching::fire(ArActionDesired* currentDesired){
     switch(state){
     case(TURNING):{
-        myRobot->setRotVel(-2.0f);
-        if(myRobot->getTh() < 89.0){
+        myRobot->setRotVel(-2.5f);
+        if(myRobot->getTh() < 85.0){
             state = FETCHING;
         }
     }break;

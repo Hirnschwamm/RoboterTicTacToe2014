@@ -53,8 +53,14 @@ bool GoTo::fire(ArActionDesired *myDesired)
                 //if (turnSpeed > 0 && turnSpeed < 3) turnSpeed = 3;
                 //if (turnSpeed < 0 && turnSpeed > -3) turnSpeed = -3;
 
-                myRobot->setRotVel(turnSpeed * turnDir);
-                if (curPos.getTh() > targetHeading - 1 && curPos.getTh() < targetHeading + 1) stateChange(1);
+                //myRobot->setRotVel(turnSpeed * turnDir);
+                myRobot->setHeading(targetHeading);
+
+                int deltaHeading = ((int)(curPos.getTh() - targetHeading) + 360) % 360;
+                if (deltaHeading > 180) deltaHeading = 360 - deltaHeading;
+                //if (curPos.getTh() > targetHeading - 1 && curPos.getTh() < targetHeading + 1) stateChange(1);
+                //myRobot->setDeltaHeading(turnDir * deltaHeading);
+                if (deltaHeading < 2) stateChange(1);
                 if (stateTime > 30) stateChange(2);
                 break;
             }
@@ -70,7 +76,9 @@ bool GoTo::fire(ArActionDesired *myDesired)
             }
 
             case 2: {
-                if (curPos.getTh() < targetHeading - 10 || curPos.getTh() > targetHeading + 10) {
+                int deltaHeading = ((int)(curPos.getTh() - targetHeading) + 360) % 360;
+                if (deltaHeading > 180) deltaHeading = 360 - deltaHeading;
+                if (deltaHeading > 10) {
                     stateChange(-2);
                     //myRobot->setVel(0);
                 } else {
@@ -87,7 +95,9 @@ bool GoTo::fire(ArActionDesired *myDesired)
                     if (turnSpeed < 1) turnSpeed = 0;
                     if (turnSpeed > 5) turnSpeed = 5;
 
-                    myRobot->setRotVel(turnSpeed * turnDir);
+                    //myRobot->setRotVel(turnSpeed * turnDir);
+                    myRobot->setHeading(targetHeading);
+                    //myRobot->setDeltaHeading(turnDir * deltaHeading);
 
                     int targetVel = minVel;
                     if (dist > maxVel * 2) {
