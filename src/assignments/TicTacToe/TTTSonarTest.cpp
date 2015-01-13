@@ -6,6 +6,7 @@ TTTSonarTest::TTTSonarTest() : TicTacToeState(NULL, NULL)
 }
 
 TTTSonarTest::TTTSonarTest(ArRobot *myRobot, TicTacToeAction *action) : TicTacToeState(myRobot, action) {
+    //class for testing only
     myLaser = myRobot->findLaser(1);
     turn = true;
 }

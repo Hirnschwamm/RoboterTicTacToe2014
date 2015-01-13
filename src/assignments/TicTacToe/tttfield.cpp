@@ -332,31 +332,33 @@ void TTTField::aiTurn(int level, int *moveX, int *moveY) {
     int mySign = turn() % 2;
 
     switch(level) {
-        case 0: {
+        case 0: { //none
             break;
         }
 
-        case 1: {
+        case 1: { //random
             randomEmpty(moveX, moveY);
             break;
         }
 
-        case 2: {
+        case 2: { //detect own row of 2
             if (!bestMove(mySign, moveX, moveY, true, false)) randomEmpty(moveX, moveY);
             break;
         }
 
-        case 3: {
+        case 3: { //detect row of 2
             if (!bestMove(mySign, moveX, moveY)) randomEmpty(moveX, moveY);
             break;
         }
 
-        case 4: {
+        case 4: { //won't lose
             if (turn() == 0) {
                 (*moveX) = 1;
 				(*moveY) = 1;
-				//8% lose vs level 3
-				//cornor(moveX, moveY, rand() % 4);
+                /*
+                 * 8% lose vs level 3
+                 * cornor(moveX, moveY, rand() % 4);
+                */
             } else if (turn() == 1) {
                 //O not center start?
                 if (field[1][1] < 0) {
@@ -380,7 +382,7 @@ void TTTField::aiTurn(int level, int *moveX, int *moveY) {
             break;
         }
 
-		case 5: {
+        case 5: { //failed attempt to improve 4
             if (turn() == 0) {
 				cornor(moveX, moveY, rand() % 4);
             } else if (turn() == 1) {

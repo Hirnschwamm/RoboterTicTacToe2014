@@ -34,22 +34,22 @@ TTTPlacing::TTTPlacing(ArRobot* myRobot, TicTacToeAction* action) :
         WayPoint last(-1, -1, -1);
         PathUtil::findNextWp(end.x, end.y, &last, action->getWaypoints());
 
+        //add first WP to path
         path.push_back(&action->getWaypoints()->at(first.x).at(first.y));
+        //compute path from first WP to last WP
         PathUtil::findPath(path[0], &action->getWaypoints()->at(last.x).at(last.y), &path, &bestPath);
-        //finalPath.push_back(&start);
         for (int i = 0; i < bestPath.size(); i++) finalPath.push_back(bestPath[i]);
-        //finalPath.push_back(&end);
 
         WayPoint *center = &action->getWaypoints()->at(1).at(1);
         WayPoint dPos(center->x - end.x, center->y - end.y, -1);
         if (targetX == 1 && targetY == 1) {
-            pPos.x = end.x + (dPos.x * .8);
-            pPos.y = end.y + (dPos.y * .8);
+            pPos.x = end.x + (dPos.x * .7);
+            pPos.y = end.y + (dPos.y * .7);
         } else {
-            pPos.x = end.x + (dPos.x * .25);
-            pPos.y = end.y + (dPos.y * .25);
+            pPos.x = end.x + (dPos.x * .1);
+            pPos.y = end.y + (dPos.y * .1);
         }
-
+        //position for playceing
         finalPath.push_back(&pPos);
 
         for (int i = 0; i < finalPath.size(); i++) {

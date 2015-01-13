@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
 
     std::vector<WayPoint*> all1d;
     std::vector<std::vector<WayPoint> > wayPoints;
-    //init TTT field
+    //init TTT field (waypoint map)
     for (int x = 0; x < 3; x++) {
         std::vector<WayPoint> newVec;
         wayPoints.push_back(newVec);
@@ -35,6 +35,7 @@ int main(int argc, char **argv) {
     }
 
     for (int i = 0; i < 9; i++) all1d.push_back(new WayPoint(0, 0, 0));
+    //create waypoints from goals
     PathUtil::init(map, &all1d);
     printf("#########################\n");
     //for(int i = 0; i < all1d.size(); i++) printf("%i/%i: %ix%i\n", i, all1d.at(i)->id, all1d.at(i)->x, all1d.at(i)->y);
@@ -46,6 +47,7 @@ int main(int argc, char **argv) {
         wayPoints[yPos][xPos] = *tmpWP;
     }
 
+    //set paths between waypoints
     for (int x = 0; x < (int) wayPoints.size(); x++) {
         for (int y = 0; y < (int) wayPoints[x].size(); y++) {
             if (x + 1 < (int) wayPoints.size()       && !wayPoints[x + 1][y].blocked)   wayPoints[x][y].wayPoints.push_back(&wayPoints[x + 1][y]);
