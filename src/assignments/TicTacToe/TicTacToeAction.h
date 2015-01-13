@@ -39,10 +39,14 @@ public:
 
     void printBlobInfo(ArACTSBlob &blob);
 
-    void goTo(ArPose goal);
+    void goTo(ArPose goal, TicTacToeState* returnState);
 
     void removePathTask(){
         myRobot->remUserTask("PathTask");
+    }
+
+    void setReturnState(TicTacToeState* s){
+        this->returnState = s;
     }
 
 private:
@@ -59,6 +63,9 @@ private:
     std::vector<std::vector<WayPoint> >* waypoints;
 
     TicTacToeState* state;
+
+    TicTacToeState* returnState;
+
     ArACTS_1_2 acts;
 
     ArActionDesired myDesired;

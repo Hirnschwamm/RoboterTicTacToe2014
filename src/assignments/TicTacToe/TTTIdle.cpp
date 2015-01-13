@@ -13,15 +13,15 @@ TTTIdle::~TTTIdle(){
 
 void TTTIdle::fire(ArActionDesired* currentDesired){
 
-    action->goTo(ArPose(-500, 500, 90));
-
-    /*action->setState(new TTTPlacing(myRobot, action));
-
+    action->setState(new TTTPlacing(myRobot, action));
+    return;
+/*
     if(robotStarts){
         printf("STATETRANSITION: IDLE--->FETCHING\n");
         action->setState(new TTTPlacing(myRobot, action));
     }else{
         printf("STATETRANSITION: IDLE--->OBSERVING\n");
         action->setState(new TTTObserving(myRobot, action, 0));
-    }*/
+    }
+    */
 }

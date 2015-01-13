@@ -26,8 +26,15 @@ void TicTacToeAction::activate(){
 
     //acts.openPort(myRobot);
 
-    setState(new TTTIdle(this->myRobot, this, robotStarts));
     ArAction::activate();
+
+    if(!returnState){
+        returnState = new TTTIdle(myRobot, this, robotStarts);
+    }
+
+    state = returnState;
+
+    myRobot->addUserTask("PathTask", 0, pt);
 }
 
 void TicTacToeAction::deactivate(){
@@ -36,11 +43,12 @@ void TicTacToeAction::deactivate(){
 
 ArActionDesired* TicTacToeAction::fire(ArActionDesired currentDesired){
     myDesired.reset();
-    if(state){
+    if(state && pt->isIdle()){
         state->fire(&myDesired);
     }else{
-        printf("No State!\n");
+        printf("No State, or Pathtask is active!\n");
     }
+
     return &myDesired;
 }
 
@@ -81,8 +89,18 @@ void TicTacToeAction::printBlobInfo(ArACTSBlob &blob){
     blob.getXCG(), blob.getYCG());
 }
 
-void TicTacToeAction::goTo(ArPose goal){
-    pt->setPose(goal);
+void TicTacToeAction::goTo(ArPose goal, TicTacToeState* returnState){
+    if(pt){
+        delete pt;
+    }
+
+    pt = new PathTask(myRobot, pathPlanningTask, myMap, goal, this);
+    printf("LOLOLOLOLO\n");
+    pt->setReturnState(returnState);
+    printf("LOLOLOLOLO2\n");
+    pt->setIdle(false);
+    printf("LOLOLOLOLO3\n");
     myRobot->addUserTask("PathTask", 0, pt);
+    printf("LOLOLOLOLO4\n");
 }
 

@@ -11,6 +11,7 @@ TTTPlacing::TTTPlacing(ArRobot* myRobot, TicTacToeAction* action) :
         action->getField()->aiTurn(1, &targetX, &targetY);
 
         gripper = new ArGripper(myRobot);
+
         //generate path
         start.x = myRobot->getPose().getX();
         start.y = myRobot->getPose().getY();
@@ -56,7 +57,7 @@ TTTPlacing::TTTPlacing(ArRobot* myRobot, TicTacToeAction* action) :
             printf("%i. WP: %ix%i\n", i, (int) finalPath[i]->x, finalPath[i]->y);
         }
 
-        myGoto = new GoTo(&finalPath, myRobot, false);
+        myGoto = new GoTo(&finalPath, myRobot, action, this, false);
 }
 
 void TTTPlacing::fire(ArActionDesired *currentDesired){
