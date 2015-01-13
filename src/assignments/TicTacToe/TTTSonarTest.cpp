@@ -42,51 +42,55 @@ void TTTSonarTest::fire(ArActionDesired *currentDesired) {
             printf("%i reading: %i\n", i, (int)curReading.getRange());
         }
 
-        /*
-        int minLeft = -1;
-        int minRight = -1;
-
-        int minLeftVal = 100000;
-        int minRightVal = 100000;
-        if (myReadings->size() > 10) {
-            for (int i = 0; i < myReadings->size(); i++) {
-                ArSensorReading curReading = (*myReadings)[i];
-                if (i < 45) {
-                    if (minLeft < 0 || curReading.getRange() < minLeftVal) {
-                        minLeft = i;
-                        minLeftVal = curReading.getRange();
-                    }
-                } else if (i > 135) {
-                    if (minRight < 0 || curReading.getRange() < minRightVal) {
-                       minRight = i;
-                       minRightVal = curReading.getRange();
-                   }
-                }
-            }
-            if (minLeft > (180 - minRight)) {
-                myRobot->setDeltaHeading(minLeft);
-            } else {
-                myRobot->setDeltaHeading(180 - minRight);
-            }
-            printf("Turning %i, %i, %i\n", minLeft, minRight, (int)myReadings->size());
-            //turn = false;
-        }
-        */
-
-        if (myReadings->size() > 170) {
-            /*
-            if ((*myReadings)[95].getRange() > (*myReadings)[85].getRange() + 10) {
-                //turn left
-                myRobot->setRotVel(5);
-            } else if ((*myReadings)[85].getRange() > (*myReadings)[95].getRange() + 10) {
-                //turn right
-                myRobot->setRotVel(-5);
-            }
-            */
+        if (myReadings->size() > 180) {
             int rotvel = (*myReadings)[95].getRange() - (*myReadings)[85].getRange();
             if (rotvel < -10) rotvel = -10;
             if (rotvel > 10) rotvel = 10;
-            myRobot->setRotVel(rotvel/2);
+            if (rotvel * rotvel > 25) {
+                myRobot->setRotVel(rotvel/2);
+            } else {
+                ArPose rePose(0, 0, 0);
+
+                ArPose upRight = action->getMap()->getLineMaxPose();
+                ArPose lowLeft = action->getMap()->getLineMinPose();
+
+                myRobot->setRotVel(0);
+                int angle = round(myRobot->getPose().getTh() / 90) * 90;
+                rePose.setTh(angle);
+                switch (angle) {
+                case 0: {
+                    printf("0>");
+                    rePose.setY((int)(*myReadings)[180].getRange() + lowLeft.getY());
+                    rePose.setX(-(int)(*myReadings)[90].getRange() + upRight.getX());
+                    break;
+                }
+
+                case 90: {
+                    printf("90>");
+                    rePose.setY(-(int)(*myReadings)[90].getRange() + upRight.getY());
+                    rePose.setX(-(int)(*myReadings)[180].getRange() + upRight.getX());
+                    break;
+                }
+
+                case 180: {
+                    printf("180>");
+                    rePose.setY(-(int)(*myReadings)[180].getRange() + upRight.getY());
+                    rePose.setX((int)(*myReadings)[90].getRange() + lowLeft.getX());
+                    break;
+                }
+
+                case 270: {
+                    printf("270>");
+                    rePose.setY((int)(*myReadings)[90].getRange() + lowLeft.getY());
+                    rePose.setX((int)(*myReadings)[180].getRange() + lowLeft.getX());
+                    break;
+                }
+
+                }
+                printf("My Pose: %ix%i / %i; %i\n", (int)rePose.getX(), (int)rePose.getY(), (int)rePose.getTh(), angle);
+                myRobot->moveTo(rePose);
+            }
+
         }
 
     } else {

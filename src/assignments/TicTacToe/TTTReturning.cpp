@@ -27,7 +27,7 @@ TTTReturning::TTTReturning(ArRobot *myRobot, TicTacToeAction *action, WayPoint *
 
     path.push_back(&startWayPoint);
 
-    goTo = new GoTo(&path, myRobot, false);
+    goTo = new GoTo(&path, myRobot, action, false);
 }
 
 TTTReturning::~TTTReturning(){

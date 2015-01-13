@@ -56,7 +56,7 @@ TTTPlacing::TTTPlacing(ArRobot* myRobot, TicTacToeAction* action) :
             printf("%i. WP: %ix%i\n", i, (int) finalPath[i]->x, finalPath[i]->y);
         }
 
-        myGoto = new GoTo(&finalPath, myRobot, false);
+        myGoto = new GoTo(&finalPath, myRobot, action, false);
 }
 
 void TTTPlacing::fire(ArActionDesired *currentDesired){

@@ -2,12 +2,13 @@
 #include <TTTIdle.h>
 
 
-TicTacToeAction::TicTacToeAction(bool robotStarts, std::vector<std::vector<WayPoint> >* waypoints) : ArAction("TicTacToeAction", "A game of Tic Tac Toe")
+TicTacToeAction::TicTacToeAction(bool robotStarts, std::vector<std::vector<WayPoint> >* waypoints, ArMap *map) : ArAction("TicTacToeAction", "A game of Tic Tac Toe")
 {
     state = NULL;
     this->startPose = ArPose(0, 0, 0);
     this->robotStarts = robotStarts;
     this->waypoints = waypoints;
+    this->map = map;
 }
 
 TicTacToeAction::~TicTacToeAction(){
@@ -20,6 +21,8 @@ void TicTacToeAction::activate(){
     printf("TicTacToe: Activate. State: IDLE");
 
     acts.openPort(myRobot);
+    myLaser = myRobot->findLaser(1);
+    myLaser->asyncConnect();
 
     setState(new TTTIdle(this->myRobot, this, robotStarts));
     ArAction::activate();
@@ -57,6 +60,16 @@ ArACTS_1_2* TicTacToeAction::getActs(){
 
 TTTField* TicTacToeAction::getField(){
     return &field;
+}
+
+ArMap *TicTacToeAction::getMap()
+{
+    return map;
+}
+
+ArLaser *TicTacToeAction::getLaser()
+{
+    return myLaser;
 }
 
 ArPose TicTacToeAction::getStartPose(){

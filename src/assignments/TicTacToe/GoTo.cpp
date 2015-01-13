@@ -1,6 +1,6 @@
 #include "GoTo.h"
 
-GoTo::GoTo(std::vector<WayPoint*>* path, ArRobot *robot, bool targetAngle) {
+GoTo::GoTo(std::vector<WayPoint*>* path, ArRobot *robot, TicTacToeAction *action, bool targetAngle) {
     this->path = path;
     this->targetAngle= targetAngle;
     this->state = 0;
@@ -8,6 +8,7 @@ GoTo::GoTo(std::vector<WayPoint*>* path, ArRobot *robot, bool targetAngle) {
     this->initDirection = true;
     this->wpPos = 0;
     this->myRobot = robot;
+    this->action = action;
 }
 
 bool GoTo::fire(ArActionDesired *myDesired)
@@ -140,13 +141,92 @@ bool GoTo::fire(ArActionDesired *myDesired)
                 } else {
                     ArLog::log(ArLog::Normal, "reached %i/%i (%i) %ix%i", wpPos, path->size(), curWp->id, curWp->x, curWp->y);
                     wpPos++;
-                    stateChange(-5);
+                    if (wpPos == 1 || wpPos == path->size() - 1) {
+                        //next wp
+                        stateChange(-5);
+                    } else {
+                        //readjust own position
+                        stateChange(1);
+                    }
                 }
                 break;
             }
 
             case 6: {
+                ArLaser *myLaser = action->getLaser();
+                //system("clear");
 
+                myLaser->lockDevice();
+                if (myLaser->isTryingToConnect()) {
+                    printf("Laser trying to connect");
+                } else if (myLaser->isConnected()) {
+                    printf("Has Laser %i, %i, %i\n", myRobot->hasLaser(myLaser), myLaser->isTryingToConnect(), myLaser->isConnected());
+                    std::vector<ArSensorReading> *myReadings = myLaser->getRawReadingsAsVector();
+                    for (int i = 0; i < myReadings->size(); i++) {
+                        if (i % 5 > 0) continue;
+                        ArSensorReading curReading = (*myReadings)[i];
+                        if (i < 10) printf(" ");
+                        if (i < 100) printf(" ");
+                        //printf("%i reading: %i\n", i, (int)curReading.getRange());
+                    }
+
+                    if (myReadings->size() > 180) {
+                        int rotvel = (*myReadings)[95].getRange() - (*myReadings)[85].getRange();
+                        if (rotvel < -10) rotvel = -10;
+                        if (rotvel > 10) rotvel = 10;
+                        if (rotvel * rotvel > 25) {
+                            myRobot->setRotVel(rotvel/2);
+                        } else {
+                            ArPose rePose(0, 0, 0);
+
+                            ArPose upRight = action->getMap()->getLineMaxPose();
+                            ArPose lowLeft = action->getMap()->getLineMinPose();
+
+                            myRobot->setRotVel(0);
+                            int angle = round(myRobot->getPose().getTh() / 90) * 90;
+                            rePose.setTh(angle);
+                            switch (angle) {
+                            case 0: {
+                                printf("0>");
+                                rePose.setY((int)(*myReadings)[180].getRange() + lowLeft.getY());
+                                rePose.setX(-(int)(*myReadings)[90].getRange() + upRight.getX());
+                                break;
+                            }
+
+                            case 90: {
+                                printf("90>");
+                                rePose.setY(-(int)(*myReadings)[90].getRange() + upRight.getY());
+                                rePose.setX(-(int)(*myReadings)[180].getRange() + upRight.getX());
+                                break;
+                            }
+
+                            case 180: {
+                                printf("180>");
+                                rePose.setY(-(int)(*myReadings)[180].getRange() + upRight.getY());
+                                rePose.setX((int)(*myReadings)[90].getRange() + lowLeft.getX());
+                                break;
+                            }
+
+                            case 270: {
+                                printf("270>");
+                                rePose.setY((int)(*myReadings)[90].getRange() + lowLeft.getY());
+                                rePose.setX((int)(*myReadings)[180].getRange() + lowLeft.getX());
+                                break;
+                            }
+
+                            }
+                            printf("My Pose: %ix%i / %i; %i\n", (int)rePose.getX(), (int)rePose.getY(), (int)rePose.getTh(), angle);
+                            myRobot->moveTo(rePose);
+                            stateChange(-6);
+                        }
+
+                    }
+
+                } else {
+                    myLaser->asyncConnect();
+                }
+
+                myLaser->unlockDevice();
                 break;
             }
         }

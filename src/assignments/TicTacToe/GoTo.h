@@ -2,13 +2,15 @@
 #define GOTO_H
 
 #include <Aria.h>
-#include "waypoint.h"
+#include <waypoint.h>
 #include <math.h>
+#include <ArLaser.h>
+#include <TicTacToeAction.h>
 
 class GoTo
 {
 public:
-    GoTo(std::vector<WayPoint*>* path, ArRobot *robot, bool targetAngle = false);
+    GoTo(std::vector<WayPoint*>* path, ArRobot *robot, TicTacToeAction *action, bool targetAngle = false);
     virtual bool fire(ArActionDesired *myDesired);
 
 protected:
@@ -21,6 +23,7 @@ protected:
     int stateTime;
     int wpPos;
     ArRobot *myRobot;
+    TicTacToeAction *action;
     void stateChange(int change);
 };
 
