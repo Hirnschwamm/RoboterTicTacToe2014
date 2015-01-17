@@ -26,15 +26,18 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
     int newNumberOfPlayerPieces = action->getActs()->getNumBlobs(PLAYERPIECESCHANNEL);
 
     /*ArACTSBlob piece;
-    action->getActs()->getBlob(PLAYERPIECESCHANNEL, newNumberOfPlayerPieces, &piece);
+    bool b = action->getActs()->getBlob(PLAYERPIECESCHANNEL, newNumberOfPlayerPieces, &piece);
 
     int deltaX = piece.getRight() - piece.getLeft();
     int distance = getDistanceTo(PLAYERPIECEWIDTH, deltaX) * 10;
 
+    if(b){
     printf("Distance: %d\n", distance);
+    this->printBlobInfo(piece);
+    }
 
-    return;
-    */
+    return;*/
+
 
 
 
@@ -130,4 +133,14 @@ void TTTObserving::getCellFromCoordinates(int x, int y, int *cellX, int *cellY){
 
     *cellX = wp.x;
     *cellY = wp.y;
+}
+
+void TTTObserving::printBlobInfo(ArACTSBlob &blob){
+
+    ArLog::log(ArLog::Normal, " Area: %d",blob.getArea());
+    ArLog::log(ArLog::Normal, " BoundingBox: (%d, %d, %d, %d)",
+    blob.getTop(), blob.getLeft(), blob.getBottom(), blob.getRight());
+    ArLog::log(ArLog::Normal, " Position: (%d, %d)",
+    blob.getXCG(), blob.getYCG());
+
 }

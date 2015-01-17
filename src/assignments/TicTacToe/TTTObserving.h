@@ -17,6 +17,7 @@ class TTTObserving : public TicTacToeState
 public:
     TTTObserving();
     TTTObserving(ArRobot* myRobot, TicTacToeAction* action, int numberOfCurrentPlayerPieces);
+    void printBlobInfo(ArACTSBlob &blob);
 
     ~TTTObserving();
 
