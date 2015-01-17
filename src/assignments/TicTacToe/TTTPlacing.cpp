@@ -77,6 +77,7 @@ void TTTPlacing::fire(ArActionDesired *currentDesired){
         if (ticks < 100) {
             ticks++;
         } else {
+            ticks = 0;
             gripper->gripperDeploy();
             myState++;
         }
@@ -90,9 +91,12 @@ void TTTPlacing::fire(ArActionDesired *currentDesired){
     case 4: { //Moving away from token
         ArPose myPose = myRobot->getPose();
         ArPose lastPose = finalPath.at(finalPath.size() -1)->getPose();
-        if (myPose.findDistanceTo(lastPose) < 200) {
+        //if (myPose.findDistanceTo(lastPose) < 200) {
+        if (ticks < 30) {
+            ticks++;
             myRobot->setVel(-50);
         } else {
+            ticks = 0;
             myRobot->setVel(0);
             myState++;
         }
