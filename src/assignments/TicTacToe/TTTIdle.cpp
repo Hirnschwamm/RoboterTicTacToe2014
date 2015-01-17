@@ -1,5 +1,5 @@
 #include "TTTIdle.h"
-#include <TTTPlacing.h>
+#include <TTTFetching.h>
 #include <TTTSonarTest.h>
 
 TTTIdle::TTTIdle(ArRobot* myRobot, TicTacToeAction* action, bool robotStarts) : TicTacToeState(myRobot, action){
@@ -12,9 +12,10 @@ TTTIdle::~TTTIdle(){
 
 void TTTIdle::fire(ArActionDesired* currentDesired){
 
-    action->setState(new TTTPlacing(myRobot, action));
-    return;
-    if(robotStarts){    
+    //action->setState(new TTTFetching(myRobot, action));
+    //return;
+
+    if(robotStarts){
         printf("STATETRANSITION: IDLE--->FETCHING\n");
         action->setState(new TTTPlacing(myRobot, action));
     }else{

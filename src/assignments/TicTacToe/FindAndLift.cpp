@@ -33,6 +33,9 @@ void FindAndLift::deactivate(){
 
 bool FindAndLift::fire(ArActionDesired* currentDesired){
 
+    //printChannel(1);
+    //return false;
+
     if (acts->isConnected()) {
 
         acts->getBlob(1, 1, &blob);
@@ -68,6 +71,7 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
 
                 if(acts->getNumBlobs(1) > 0){
                     state = ADJUSTING;
+
                 }
 
                 printf("SEARCHING: TILT: %f\n", tilt);

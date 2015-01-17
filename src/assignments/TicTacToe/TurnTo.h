@@ -4,8 +4,8 @@
 #include<ArRobot.h>
 #include<ArACTS.h>
 
-#define SCREENWIDTH 715
-#define SCREENHEIGHT 120
+#define SCREENWIDTH 720
+#define SCREENHEIGHT 480
 
 class TurnTo
 {

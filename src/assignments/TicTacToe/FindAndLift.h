@@ -6,10 +6,10 @@
 #include<ArGripper.h>
 #include<ArSonyPTZ.h>
 
-#define SCREENWIDTH 715
-#define SCREENHEIGHT 120
+#define SCREENWIDTH 720
+#define SCREENHEIGHT 420
 
-#define focalLength 822
+#define focalLength 703
 
 enum FINDANDLIFTSTATE{IDLE, SEARCHING, ADJUSTING, APPROACHING, LIFTING, DONE};
 

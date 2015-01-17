@@ -25,6 +25,19 @@ TTTObserving::~TTTObserving(){
 void TTTObserving::fire(ArActionDesired *currentDesired){
     int newNumberOfPlayerPieces = action->getActs()->getNumBlobs(PLAYERPIECESCHANNEL);
 
+    /*ArACTSBlob piece;
+    action->getActs()->getBlob(PLAYERPIECESCHANNEL, newNumberOfPlayerPieces, &piece);
+
+    int deltaX = piece.getRight() - piece.getLeft();
+    int distance = getDistanceTo(PLAYERPIECEWIDTH, deltaX) * 10;
+
+    printf("Distance: %d\n", distance);
+
+    return;
+    */
+
+
+
     switch(state){
     case ALIGNING:
        if(myRobot->getTh() < 150){
