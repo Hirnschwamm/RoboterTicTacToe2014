@@ -60,6 +60,7 @@ TTTPlacing::TTTPlacing(ArRobot* myRobot, TicTacToeAction* action) :
 }
 
 void TTTPlacing::fire(ArActionDesired *currentDesired){
+    printf("p(%i)>", ticks);
     switch(myState) {
     case 0: { //getting in position for placeing
         if (myGoto->fire(currentDesired)) myState++;
@@ -93,6 +94,7 @@ void TTTPlacing::fire(ArActionDesired *currentDesired){
         ArPose lastPose = finalPath.at(finalPath.size() -1)->getPose();
         //if (myPose.findDistanceTo(lastPose) < 200) {
         if (ticks < 30) {
+            printf("Moveing away from token...\n");
             ticks++;
             myRobot->setVel(-50);
         } else {
