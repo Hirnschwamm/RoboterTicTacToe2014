@@ -1,9 +1,13 @@
 #include<FindAndLift.h>
 
-FindAndLift::FindAndLift(ArRobot* myRobot, ArACTS_1_2* acts){
+FindAndLift::FindAndLift(ArRobot* myRobot, ArACTS_1_2* acts, TicTacToeAction* action){
     this->myRobot = myRobot;
     this->state = IDLE;
     this->acts = acts;
+    this->action = action;
+    this->myLaser = action->getLaser();
+
+    ticker = 0;
 
     this->activate();
 }
@@ -104,7 +108,24 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
             case(APPROACHING):{
                 printf("APPROACHING!\n");
 
-                printf("%f\n", myRobot->getRotVel());
+                //printf("%f\n", myRobot->getRotVel());
+                myLaser->lockDevice();
+
+                std::vector<ArSensorReading>* myReadings = myLaser->getRawReadingsAsVector();
+
+                if(myReadings->size() > 180){
+                    int rotVel = (*myReadings)[95].getRange() - (*myReadings)[85].getRange();
+                    if(rotVel < -10){
+                        rotVel = -10;
+                    }
+                    if(rotVel > 10){
+                        rotVel = 10;
+                    }
+
+                    if (rotVel * rotVel > 25) {
+                        myRobot->setRotVel(rotVel/2);
+                    }
+                }
 
                 if(gripper->getBreakBeamState() == 3){
                    myRobot->setVel(0.0);
@@ -118,12 +139,19 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
                 if(acts->getNumBlobs(1) == 0 && ptz->getTilt() >= -25.0f){
                     state = SEARCHING;
                 }
+
+                myLaser->unlockDevice();
             }break;
             case(LIFTING):{
                 if(gripper->getPaddleState() != 3){
                     gripper->gripperStore();
+                }
+
+                ticker++;
+                if(ticker > 50){
                     state = DONE;
                 }
+
             }break;
             case(DONE):{
                 return true;

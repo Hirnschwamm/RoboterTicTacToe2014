@@ -26,7 +26,7 @@ bool GoTo::fire(ArActionDesired *myDesired)
 
     //double targetHeading = acos((curPos.getY() - target.getY()) / dist)  * (180 / M_PI);
 
-    ArLog::log(ArLog::Normal, "I'm at: %ix%i; %i / %i; %ix%i", (int) curPos.getX(), (int) curPos.getY(), (int) curPos.getTh(), (int) targetHeading, (int) target.getX(), (int) target.getY());
+    ArLog::log(ArLog::Normal, "I'm at(%i): %ix%i; %i / %i; %ix%i", state, (int) curPos.getX(), (int) curPos.getY(), (int) curPos.getTh(), (int) targetHeading, (int) target.getX(), (int) target.getY());
 
 
     switch(state) {
@@ -56,7 +56,7 @@ bool GoTo::fire(ArActionDesired *myDesired)
         }
 
         case 1: { //check angle (unecessary / old code)
-            if (curPos.getTh() < targetHeading -1 || curPos.getTh() > targetHeading + 1) {
+            if (curPos.getTh() < targetHeading -2 || curPos.getTh() > targetHeading + 2) {
                 stateChange(-1);
             } else {
                 stateChange(1);

@@ -36,11 +36,12 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
     return;
     */
 
-
-
     switch(state){
     case ALIGNING:
-       if(myRobot->getTh() < 150){
+
+        printf("%f\n", myRobot->getPose().getTh());
+
+       if(myRobot->getTh() < 145){
             myRobot->setHeading(150);
         }else{
             myRobot->setRotVel(0.0);
@@ -60,7 +61,21 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
         break;
     case WAITINGFORCONFIRMATION:{
         ArACTSBlob piece;
-        bool b = action->getActs()->getBlob(PLAYERPIECESCHANNEL, newNumberOfPlayerPieces, &piece);
+        ArACTSBlob tempBlob;
+        int pieceWidth;
+        bool b;
+
+        for(int i = 0; i < newNumberOfPlayerPieces; i++){
+            if(piece.getRight() - piece.getLeft() > pieceWidth){
+            b = action->getActs()->getBlob(PLAYERPIECESCHANNEL, newNumberOfPlayerPieces, &piece);
+
+        }
+
+        if(b){
+            printf("b = true\n");
+        }else{
+            printf("b = false\n");
+        }
 
         if(b){
             int margin = 40;
@@ -85,7 +100,7 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
         }
         printf("WAITING: %d\n", timer);
     }
-        break;
+    }    break;
     case CONFIRMATION:
         if(turnTo.fire()){
 

@@ -4,13 +4,13 @@
 
 TTTFetching::TTTFetching() :
     TicTacToeState(NULL, NULL),
-    findAndLift(NULL, NULL)
+    findAndLift(NULL, NULL, NULL)
 {
 }
 
 TTTFetching::TTTFetching(ArRobot *myRobot, TicTacToeAction *action) :
     TicTacToeState(myRobot, action),
-    findAndLift(myRobot, action->getActs()){
+    findAndLift(myRobot, action->getActs(), action){
 
     ptz = myRobot->getPTZ();
     ptz->tilt(-12.0);
@@ -29,7 +29,7 @@ void TTTFetching::fire(ArActionDesired* currentDesired){
     //TEMP//
     switch(state){
     case(TURNING):{
-        myRobot->setRotVel(-2.5f);
+        myRobot->setRotVel(-5.0f);
         if(myRobot->getTh() < 85.0){
             state = FETCHING;
         }

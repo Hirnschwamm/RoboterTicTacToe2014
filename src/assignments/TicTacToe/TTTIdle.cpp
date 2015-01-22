@@ -12,7 +12,7 @@ TTTIdle::~TTTIdle(){
 
 void TTTIdle::fire(ArActionDesired* currentDesired){
 
-    //action->setState(new TTTFetching(myRobot, action));
+    //action->setState(new TTTPlacing(myRobot, action));
     //return;
 
     if(robotStarts){
