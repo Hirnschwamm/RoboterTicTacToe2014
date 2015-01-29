@@ -83,9 +83,7 @@ std::vector<std::vector<WayPoint> >* TicTacToeAction::getWaypoints(){
 void TicTacToeAction::printBlobInfo(ArACTSBlob &blob){
 
     ArLog::log(ArLog::Normal, " Area: %d",blob.getArea());
-    ArLog::log(ArLog::Normal, " BoundingBox: (%d, %d, %d, %d)",
-    blob.getTop(), blob.getLeft(), blob.getBottom(), blob.getRight());
-    ArLog::log(ArLog::Normal, " Position: (%d, %d)",
-    blob.getXCG(), blob.getYCG());
+    ArLog::log(ArLog::Normal, " BoundingBox: (%d, %d, %d, %d)", blob.getTop(), blob.getLeft(), blob.getBottom(), blob.getRight());
+    ArLog::log(ArLog::Normal, " Position: (%d, %d)", blob.getXCG(), blob.getYCG());
 }
 

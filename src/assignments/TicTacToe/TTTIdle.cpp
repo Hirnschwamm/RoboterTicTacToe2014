@@ -12,8 +12,8 @@ TTTIdle::~TTTIdle(){
 
 void TTTIdle::fire(ArActionDesired* currentDesired){
 
-    //action->setState(new TTTPlacing(myRobot, action));
-    //return;
+    action->setState(new TTTObserving(myRobot, action, 0));
+    return;
 
     if(robotStarts){
         printf("STATETRANSITION: IDLE--->FETCHING\n");

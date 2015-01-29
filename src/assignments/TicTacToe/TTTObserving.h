@@ -10,6 +10,12 @@
 #define FOCALLENGTH 822
 #define PLAYERPIECEWIDTH 11
 
+struct point{
+    int x;
+    int y;
+
+};
+
 enum TTTOBSERVINGSTATE{ALIGNING, OBSERVING, WAITINGFORCONFIRMATION, CONFIRMATION, TEMP};
 
 class TTTObserving : public TicTacToeState
@@ -30,7 +36,10 @@ private:
     TurnTo turnTo;
     TTTOBSERVINGSTATE state;
 
-    int getDistanceTo(int w, int deltaX);
+    std::vector<point> points;
+
+    float distanceTo(point a, point b);
+    float distanceTo(point l1, point l2, point a);
     void getCellFromCoordinates(int x, int y, int* cellX, int* cellY);
 };
 

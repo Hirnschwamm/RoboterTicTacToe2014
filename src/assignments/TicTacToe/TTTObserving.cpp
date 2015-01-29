@@ -14,8 +14,19 @@ TTTObserving::TTTObserving(ArRobot *myRobot, TicTacToeAction *action, int number
     this->numberOfCurrentPlayerPieces = numberOfCurrentPlayerPieces;
     timer = 0;
 
+    point north = {382, 197};
+    points.push_back(north);
+    point west = {150, 226};
+    points.push_back(west);
+    point south = {299, 297};
+    points.push_back(south);
+    point east = {575, 241};
+    points.push_back(east);
+
     ArPTZ* ptz = myRobot->getPTZ();
     ptz->tilt(-15.0);
+
+    myRobot->setHeading(150.0);
 }
 
 TTTObserving::~TTTObserving(){
@@ -25,19 +36,10 @@ TTTObserving::~TTTObserving(){
 void TTTObserving::fire(ArActionDesired *currentDesired){
     int newNumberOfPlayerPieces = action->getActs()->getNumBlobs(PLAYERPIECESCHANNEL);
 
-    /*ArACTSBlob piece;
-    bool b = action->getActs()->getBlob(PLAYERPIECESCHANNEL, newNumberOfPlayerPieces, &piece);
+    ArACTSBlob piece;
+    bool b = action->getActs()->getBlob(1, 1, &piece);
 
-    int deltaX = piece.getRight() - piece.getLeft();
-    int distance = getDistanceTo(PLAYERPIECEWIDTH, deltaX) * 10;
-
-    if(b){
-    printf("Distance: %d\n", distance);
-    this->printBlobInfo(piece);
-    }
-
-    return;*/
-
+    return;
 
     switch(state){
     case ALIGNING:
@@ -64,14 +66,10 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
         break;
     case WAITINGFORCONFIRMATION:{
         ArACTSBlob piece;
-        ArACTSBlob tempBlob;
-        int pieceWidth;
         bool b;
 
         for(int i = 0; i < newNumberOfPlayerPieces; i++){
-            if(piece.getRight() - piece.getLeft() > pieceWidth){
             b = action->getActs()->getBlob(PLAYERPIECESCHANNEL, newNumberOfPlayerPieces, &piece);
-
         }
 
         if(b){
@@ -90,7 +88,6 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
             }
 
             if(timer > CONFIRMATIONTIME){
-                turnTo.setTargetBlobIndex(newNumberOfPlayerPieces);
                 state = CONFIRMATION;
             }
 
@@ -102,45 +99,81 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
             newPiecePos[1] = piece.getYCG();
         }
         printf("WAITING: %d\n", timer);
-    }
-    }    break;
-    case CONFIRMATION:
-        if(turnTo.fire()){
+    }   break;
+    case CONFIRMATION:{
+        float shortestDistance = 100000.0f;
+        point blobPos = {piece.getXCG(), piece.getYCG()};
+        int closestPointIndex = -1;
+        int currentDistancePoint;
+        int currentDistanceLine;
+        bool closestFeatureIsLine = false;
 
-            ArACTSBlob piece;
-            action->getActs()->getBlob(PLAYERPIECESCHANNEL, newNumberOfPlayerPieces, &piece);
-
-            int deltaX = piece.getRight() - piece.getLeft();
-            int distance = getDistanceTo(PLAYERPIECEWIDTH, deltaX) * 10;
-
-            float alpha = (myRobot->getTh() - 90.0) * PI / 180;
-            int oppositeLeg = sin(alpha) * distance;
-            int adjacentLeg = cos(alpha) * distance;
-
-            int pieceXPos = myRobot->getPose().getX() - oppositeLeg;
-            int pieceYPos = myRobot->getPose().getY() + adjacentLeg;
-
-            printf("Distance: %d\n", distance * 10);
-            printf("Angle: %f\n pieceXpos: %d pieceYpos: %d\n", alpha, pieceXPos, pieceYPos);
-
-            int fieldXPos, fieldYPos;
-            getCellFromCoordinates(pieceXPos, pieceYPos, &fieldXPos, &fieldYPos);
-
-            action->getField()->field[fieldXPos][fieldYPos] = (action->getField()->turn() % 2);
-            action->getField()->debugPrint();
-
-            printf("X:%d Y:%d\n", fieldXPos, fieldYPos);
-            printf("STATETRANSITION: OBSERVING--->FETCHING\n");
-            action->setState(new TTTFetching(myRobot, action));
+        for(int i = 0; i < points.size(); i++){
+            currentDistancePoint = distanceTo(points[i], blobPos);
+            currentDistanceLine = distanceTo(points[i], points[(i+1) % points.size()], blobPos);
+            if(currentDistancePoint < shortestDistance || currentDistanceLine < shortestDistance){
+                closestPointIndex = i;
+                if(currentDistancePoint < currentDistanceLine){
+                    shortestDistance = currentDistancePoint;
+                }else{
+                    shortestDistance = currentDistanceLine;
+                    closestFeatureIsLine = true;
+                }
+            }
         }
-        break;
+
+        if(!closestFeatureIsLine){
+            switch(closestPointIndex){
+            case(0):
+                action->getField()->field[0][0] = action->getField()->turn() % 2;
+            break;
+            case(1):
+                action->getField()->field[0][2] = action->getField()->turn() % 2;
+            break;
+            case(2):
+                action->getField()->field[2][2] = action->getField()->turn() % 2;
+            break;
+            case(3):
+                action->getField()->field[2][0] = action->getField()->turn() % 2;
+            break;
+            }
+        }else{
+            switch(closestPointIndex){
+            case(0):
+                action->getField()->field[0][1] = action->getField()->turn() % 2;
+            break;
+            case(1):
+                action->getField()->field[1][2] = action->getField()->turn() % 2;
+            break;
+            case(2):
+                action->getField()->field[2][1] = action->getField()->turn() % 2;
+            break;
+            case(3):
+                action->getField()->field[1][0] = action->getField()->turn() % 2;
+            break;
+            }
+        }
+    }
     }
 
 }
 
-int TTTObserving::getDistanceTo(int w, int deltaX){
-    return (FOCALLENGTH * w)/deltaX;
+float TTTObserving::distanceTo(point a, point b){
+    float d1 = (a.x - b.x) * (a.x - b.x);
+    float d2 = (a.y - b.y) * (a.y - b.y);
+
+    return sqrt(d1 + d2);
 }
+
+float TTTObserving::distanceTo(point l1, point l2, point a){
+    float lineSquaredX = (l1.x - l2.x) * (l1.x - l2.x);
+    float lineSquaredY = (l1.y - l2.y) * (l1.y - l2.y);
+    float exp1 = (l2.y - l1.y)*a.x - (l2.x - l1.x)*a.y + l2.x*l1.y - l2.y*l1.x;
+    float exp2 = (sqrt(lineSquaredY + lineSquaredX));
+    return (float)std::abs((int)exp1) / exp2;
+}
+
+
 
 void TTTObserving::getCellFromCoordinates(int x, int y, int *cellX, int *cellY){
     WayPoint wp;
