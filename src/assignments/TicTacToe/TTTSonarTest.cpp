@@ -23,7 +23,7 @@ struct point {
 
 bool inRectangle(point a, point b, point c, point d, point p) {
     double sumTriangles = triangleArea(a, p, d) +
-                 triangelArea(d, p, c) +
+                 triangleArea(d, p, c) +
                  triangleArea(c, p, b) +
                  triangleArea(p, b, a);
     if (sumTriangles > rectangleArea(a, b, c, d)) return false;
