@@ -39,8 +39,6 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
     ArACTSBlob piece;
     bool b = action->getActs()->getBlob(1, 1, &piece);
 
-    return;
-
     switch(state){
     case ALIGNING:
 
@@ -103,56 +101,76 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
     case CONFIRMATION:{
         float shortestDistance = 100000.0f;
         point blobPos = {piece.getXCG(), piece.getYCG()};
-        int closestPointIndex = -1;
-        int currentDistancePoint;
-        int currentDistanceLine;
+        int closestIndex = -1;
+        int currentDistance;
         bool closestFeatureIsLine = false;
 
+        if(inRectangle(points[0],points[1], points[2], points[3], blobPos)){
+            action->getField()->field[1][1] = action->getField()->turn() % 2;
+            printf("Playerpiece is at: 1 | 1\n");
+            return;
+        };
+
+        //Check points
         for(int i = 0; i < points.size(); i++){
-            currentDistancePoint = distanceTo(points[i], blobPos);
-            currentDistanceLine = distanceTo(points[i], points[(i+1) % points.size()], blobPos);
-            if(currentDistancePoint < shortestDistance || currentDistanceLine < shortestDistance){
-                closestPointIndex = i;
-                if(currentDistancePoint < currentDistanceLine){
-                    shortestDistance = currentDistancePoint;
-                }else{
-                    shortestDistance = currentDistanceLine;
-                    closestFeatureIsLine = true;
-                }
+            currentDistance = distanceTo(points[i], blobPos);
+            if(currentDistance < shortestDistance){
+                closestIndex = i;
+                shortestDistance = currentDistance;
+            }
+        }
+        //Check lines
+        for(int i = 0; i < points.size(); i++){
+            currentDistance = distanceTo(points[i], points[(i + 1) % points.size()], blobPos);
+            if(currentDistance < shortestDistance){
+                closestIndex = i;
+                shortestDistance = currentDistance;
+                closestFeatureIsLine = true;
             }
         }
 
+        int index1, index2;
         if(!closestFeatureIsLine){
-            switch(closestPointIndex){
+            switch(closestIndex){
             case(0):
-                action->getField()->field[0][0] = action->getField()->turn() % 2;
+                index1 = 0;
+                index2 = 0;
             break;
             case(1):
-                action->getField()->field[0][2] = action->getField()->turn() % 2;
+                index1 = 0;
+                index2 = 2;
             break;
             case(2):
-                action->getField()->field[2][2] = action->getField()->turn() % 2;
+                index1 = 2;
+                index2 = 2;
             break;
             case(3):
-                action->getField()->field[2][0] = action->getField()->turn() % 2;
+                index1 = 2;
+                index2 = 0;
             break;
             }
         }else{
-            switch(closestPointIndex){
+            switch(closestIndex){
             case(0):
-                action->getField()->field[0][1] = action->getField()->turn() % 2;
+                index1 = 0;
+                index2 = 1;
             break;
             case(1):
-                action->getField()->field[1][2] = action->getField()->turn() % 2;
+                index1 = 1;
+                index2 = 2;
             break;
             case(2):
-                action->getField()->field[2][1] = action->getField()->turn() % 2;
+               index1 = 2;
+               index2 = 1;
             break;
             case(3):
-                action->getField()->field[1][0] = action->getField()->turn() % 2;
+               index1 = 1;
+               index2 = 0;
             break;
             }
         }
+        action->getField()->field[index1][index2] = action->getField()->turn() % 2;
+        printf("Playerpiece is at: %d | %d\n", index1, index2);
     }
     }
 
@@ -171,6 +189,27 @@ float TTTObserving::distanceTo(point l1, point l2, point a){
     float exp1 = (l2.y - l1.y)*a.x - (l2.x - l1.x)*a.y + l2.x*l1.y - l2.y*l1.x;
     float exp2 = (sqrt(lineSquaredY + lineSquaredX));
     return (float)std::abs((int)exp1) / exp2;
+}
+
+bool TTTObserving::inRectangle(point a, point b, point c, point d, point p) {
+    double sumTriangles = triangleArea(a, p, d) +
+                 triangleArea(d, p, c) +
+                 triangleArea(c, p, b) +
+                 triangleArea(p, b, a);
+    if (sumTriangles > rectangleArea(a, b, c, d)) return false;
+    return true;
+}
+
+double TTTObserving::triangleArea(point a, point b, point c) {
+    return std::abs((((a.x - c.x) * (b.y - a.y)) - ((a.x - b.x) * (c.y - a.y)))/2);
+}
+
+double TTTObserving::rectangleArea(point a, point b, point c, point d) {
+    return std::abs(((a.x * b.y) - (b.x * a.y)) +
+            ((b.x * c.y) - (c.x * b.y)) +
+            ((c.x * d.y) - (d.x * c.y)) +
+            ((d.x * a.y) - (a.x * d.y))
+            )/2;
 }
 
 

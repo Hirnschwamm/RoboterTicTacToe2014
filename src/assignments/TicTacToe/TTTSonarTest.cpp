@@ -16,32 +16,6 @@ TTTSonarTest::~TTTSonarTest()
 
 }
 
-struct point {
-    int x;
-    int y;
-};
-
-bool inRectangle(point a, point b, point c, point d, point p) {
-    double sumTriangles = triangleArea(a, p, d) +
-                 triangleArea(d, p, c) +
-                 triangleArea(c, p, b) +
-                 triangleArea(p, b, a);
-    if (sumTriangles > rectangleArea(a, b, c, d)) return false;
-    return true;
-}
-
-double triangleArea(point a, point b, point c) {
-    return Math.abs((((a.x - c.x) * (b.y - a.y)) - ((a.x - b.x) * (c.y - a.y)))/2);
-}
-
-double rectangleArea(point a, point b, point c, point d) {
-    return Math.abs(((a.x * b.y) - (b.x * a.y)) +
-            ((b.x * c.y) - (c.x * b.y)) +
-            ((c.x * d.y) - (d.x * c.y)) +
-            ((d.x * a.y) - (a.x * d.y))
-            )/2;
-}
-
 void TTTSonarTest::fire(ArActionDesired *currentDesired) {
     if (!turn) return;
 

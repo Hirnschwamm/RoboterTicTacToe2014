@@ -40,6 +40,9 @@ private:
 
     float distanceTo(point a, point b);
     float distanceTo(point l1, point l2, point a);
+    bool inRectangle(point a, point b, point c, point d, point p);
+    double triangleArea(point a, point b, point c);
+    double rectangleArea(point a, point b, point c, point d);
     void getCellFromCoordinates(int x, int y, int* cellX, int* cellY);
 };
 
