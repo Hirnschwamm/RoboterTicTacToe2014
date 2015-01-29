@@ -122,7 +122,9 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
         //Check lines
         for(int i = 0; i < points.size(); i++){
             currentDistance = distanceTo(points[i], points[(i + 1) % points.size()], blobPos);
-            if(currentDistance < shortestDistance){
+            point intersectionPoint;
+            if(currentDistance < shortestDistance && intersect(blobPos, points[i], points[(i+1) % points.size()], &intersectionPoint)){
+                printf("line %d: %d\n", i, intersect(blobPos, points[i], points[(i+1) % points.size()], &intersectionPoint));
                 closestIndex = i;
                 shortestDistance = currentDistance;
                 closestFeatureIsLine = true;
@@ -170,7 +172,12 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
             }
         }
         action->getField()->field[index1][index2] = action->getField()->turn() % 2;
-        printf("Playerpiece is at: %d | %d\n", index1, index2);
+       // printf("Playerpiece is at: %d | %d\n", index1, index2);
+        if(closestFeatureIsLine){
+       //     printf("closest line: %d\n", closestIndex);
+        }else{
+       //     printf("closest point: %d\n", closestIndex);
+        }
     }
     }
 
@@ -231,3 +238,9 @@ void TTTObserving::printBlobInfo(ArACTSBlob &blob){
     blob.getXCG(), blob.getYCG());
 
 }
+
+bool TTTObserving::intersect(point p, point lineStart, point lineEnd, point *intersection) {
+    return ((p.x < lineStart.x && p.x > lineEnd.x) || (p.x > lineStart.x && p.x < lineEnd.x) &&
+            (p.y < lineStart.y && p.y > lineEnd.x) || (p.y > lineStart.y && p.y > lineEnd.x));
+}
+

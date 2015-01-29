@@ -43,6 +43,7 @@ private:
     bool inRectangle(point a, point b, point c, point d, point p);
     double triangleArea(point a, point b, point c);
     double rectangleArea(point a, point b, point c, point d);
+    bool intersect(point p, point lineStart, point lineEnd, point *intersection);
     void getCellFromCoordinates(int x, int y, int* cellX, int* cellY);
 };
 
