@@ -197,30 +197,26 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
 
             newPiecePos[0] = piece.getXCG();
             newPiecePos[1] = piece.getYCG();
+
         }
         printf("WAITING: %d\n", timer);
     }   break;
     case CONFIRMATION:{
-        point blobPos = {piece.getXCG(), piece.getYCG()};
-        point blobFieldPos = {-1, -1};
-        for (int i = 0; i < 3; i++) {
-            if (inPolygon(xCoords[i], blobPos)) {
-                blobFieldPos.x = i;
+        ArACTSBlob tempBlob;
+        point blobFieldPos;
+        for(int i = 1; i <= action->getActs()->getNumBlobs(PLAYERPIECESCHANNEL); i++){
+            action->getActs()->getBlob(PLAYERPIECESCHANNEL, i, &tempBlob);
+            point blobPos = {tempBlob.getXCG(), tempBlob.getYCG()};
+            getBlobFieldByScreenCoords(blobPos, &blobFieldPos);
+            if(action->getField()->field[blobFieldPos.x][blobFieldPos.y] < 0){
                 break;
             }
+
         }
-        for (int i = 0; i < 3; i++) {
-            if (inPolygon(yCoords[i], blobPos)) {
-                blobFieldPos.y = i;
-                break;
-            }
-        }
-        int tmpX = blobFieldPos.x;
-        blobFieldPos.x = blobFieldPos.y;
-        blobFieldPos.y = 2 - tmpX;
+
         if (blobFieldPos.x > -1) {
             action->getField()->field[blobFieldPos.x][blobFieldPos.y] = action->getField()->turn() % 2;
-            printf("Blob at %ix%i field: %ix%i\n", blobPos.x, blobPos.y, blobFieldPos.x, blobFieldPos.y);
+            printf("Blob field: %ix%i\n", blobFieldPos.x, blobFieldPos.y);
             //action->setState(new TTTFetching(myRobot, action));
         }
     }
@@ -250,6 +246,31 @@ bool TTTObserving::inRectangle(point a, point b, point c, point d, point p) {
                  triangleArea(p, b, a);
     if (sumTriangles > rectangleArea(a, b, c, d)) return false;
     return true;
+}
+
+bool TTTObserving::getBlobFieldByScreenCoords(point blobPos, point* blobFieldPos){
+    blobFieldPos->x = blobFieldPos->y = -1;
+    for (int i = 0; i < 3; i++) {
+        if (inPolygon(xCoords[i], blobPos)) {
+            blobFieldPos->x = i;
+            break;
+        }
+    }
+    for (int i = 0; i < 3; i++) {
+        if (inPolygon(yCoords[i], blobPos)) {
+            blobFieldPos->y = i;
+            break;
+        }
+    }
+    int tmpX = blobFieldPos->x;
+    blobFieldPos->x = blobFieldPos->y;
+    blobFieldPos->y = 2 - tmpX;
+
+    if(blobFieldPos->x == -1 || blobFieldPos->y == -1){
+        return false;
+    }else{
+        return true;
+    }
 }
 
 double TTTObserving::triangleArea(point a, point b, point c) {

@@ -49,6 +49,7 @@ private:
     std::vector<std::vector<point> > yCoords;
     bool inPolygon(std::vector<point> polygon, point p);
     double polygonArea(std::vector<point> polygon);
+    bool getBlobFieldByScreenCoords(point blobPos, point* blobFieldPos);
 };
 
 #endif // TTTOBSERVING_H
