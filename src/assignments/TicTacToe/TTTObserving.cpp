@@ -13,7 +13,7 @@ TTTObserving::TTTObserving(ArRobot *myRobot, TicTacToeAction *action, int number
     state = ALIGNING;
     this->numberOfCurrentPlayerPieces = numberOfCurrentPlayerPieces;
     timer = 0;
-
+    /*
     point north = {382, 197};
     points.push_back(north);
     point west = {150, 226};
@@ -22,6 +22,76 @@ TTTObserving::TTTObserving(ArRobot *myRobot, TicTacToeAction *action, int number
     points.push_back(south);
     point east = {575, 241};
     points.push_back(east);
+    */
+
+    //initialize points
+    point p0 = {0, 0};
+    points.push_back(p0);
+    point p1 = {0, 120};
+    points.push_back(p1);
+    point p2 = {0, 179};
+    points.push_back(p2);
+    point p3 = {0, 247};
+    points.push_back(p3);
+    point p4 = {0, 347};
+    points.push_back(p4);
+    point p5 = {0, 478};
+    points.push_back(p5);
+    point p6 = {705, 0};
+    points.push_back(p6);
+    point p7 = {705, 153};
+    points.push_back(p7);
+    point p8 = {705, 211};
+    points.push_back(p8);
+    point p9 = {705, 284};
+    points.push_back(p9);
+    point p10 = {705, 478};
+    points.push_back(p10);
+
+    //initialize polygons
+    //x
+    std::vector<point> x0;
+    x0.push_back(points[2]);
+    x0.push_back(points[5]);
+    x0.push_back(points[10]);
+    xCoords.push_back(x0);
+
+    std::vector<point> x1;
+    x1.push_back(points[1]);
+    x1.push_back(points[2]);
+    x1.push_back(points[10]);
+    x1.push_back(points[9]);
+    xCoords.push_back(x1);
+
+    std::vector<point> x2;
+    x2.push_back(points[1]);
+    x2.push_back(points[9]);
+    x2.push_back(points[6]);
+    x2.push_back(points[0]);
+    xCoords.push_back(x2);
+
+    //y
+    std::vector<point> y0;
+    y0.push_back(points[0]);
+    y0.push_back(points[3]);
+    y0.push_back(points[7]);
+    y0.push_back(points[6]);
+    yCoords.push_back(y0);
+
+    std::vector<point> y1;
+    y1.push_back(points[3]);
+    y1.push_back(points[4]);
+    y1.push_back(points[8]);
+    y1.push_back(points[7]);
+    yCoords.push_back(y1);
+
+    std::vector<point> y2;
+    y2.push_back(points[4]);
+    y2.push_back(points[5]);
+    y2.push_back(points[10]);
+    y2.push_back(points[8]);
+    yCoords.push_back(y2);
+
 
     ArPTZ* ptz = myRobot->getPTZ();
     ptz->tilt(-15.0);
@@ -99,85 +169,22 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
         printf("WAITING: %d\n", timer);
     }   break;
     case CONFIRMATION:{
-        float shortestDistance = 100000.0f;
         point blobPos = {piece.getXCG(), piece.getYCG()};
-        int closestIndex = -1;
-        int currentDistance;
-        bool closestFeatureIsLine = false;
-
-        if(inRectangle(points[0],points[1], points[2], points[3], blobPos)){
-            action->getField()->field[1][1] = action->getField()->turn() % 2;
-            printf("Playerpiece is at: 1 | 1\n");
-            return;
-        };
-
-        //Check points
-        for(int i = 0; i < points.size(); i++){
-            currentDistance = distanceTo(points[i], blobPos);
-            if(currentDistance < shortestDistance){
-                closestIndex = i;
-                shortestDistance = currentDistance;
+        point blobFieldPos = {-1, -1};
+        for (int i = 0; i < 3; i++) {
+            if (inPolygon(xCoords[i], blobPos)) {
+                blobFieldPos.x = i;
+                break;
             }
         }
-        //Check lines
-        for(int i = 0; i < points.size(); i++){
-            currentDistance = distanceTo(points[i], points[(i + 1) % points.size()], blobPos);
-            point intersectionPoint;
-            if(currentDistance < shortestDistance && intersect(blobPos, points[i], points[(i+1) % points.size()], &intersectionPoint)){
-                printf("line %d: %d\n", i, intersect(blobPos, points[i], points[(i+1) % points.size()], &intersectionPoint));
-                closestIndex = i;
-                shortestDistance = currentDistance;
-                closestFeatureIsLine = true;
+        for (int i = 0; i < 3; i++) {
+            if (inPolygon(yCoords[i], blobPos)) {
+                blobFieldPos.y = i;
+                break;
             }
         }
-
-        int index1, index2;
-        if(!closestFeatureIsLine){
-            switch(closestIndex){
-            case(0):
-                index1 = 0;
-                index2 = 0;
-            break;
-            case(1):
-                index1 = 0;
-                index2 = 2;
-            break;
-            case(2):
-                index1 = 2;
-                index2 = 2;
-            break;
-            case(3):
-                index1 = 2;
-                index2 = 0;
-            break;
-            }
-        }else{
-            switch(closestIndex){
-            case(0):
-                index1 = 0;
-                index2 = 1;
-            break;
-            case(1):
-                index1 = 1;
-                index2 = 2;
-            break;
-            case(2):
-               index1 = 2;
-               index2 = 1;
-            break;
-            case(3):
-               index1 = 1;
-               index2 = 0;
-            break;
-            }
-        }
-        action->getField()->field[index1][index2] = action->getField()->turn() % 2;
-       // printf("Playerpiece is at: %d | %d\n", index1, index2);
-        if(closestFeatureIsLine){
-       //     printf("closest line: %d\n", closestIndex);
-        }else{
-       //     printf("closest point: %d\n", closestIndex);
-        }
+        action->getField()->field[blobFieldPos.x][blobFieldPos.y] = action->getField()->turn() % 2;
+        printf("Blob at %ix%i field: %ix%i\n", blobPos.x, blobPos.y, blobFieldPos.x, blobFieldPos.y);
     }
     }
 
@@ -219,6 +226,23 @@ double TTTObserving::rectangleArea(point a, point b, point c, point d) {
             )/2;
 }
 
+bool TTTObserving::inPolygon(std::vector<point> polygon, point p) {
+      int i, j, c = 0;
+      for (i = 0, j = polygon.size()-1; i < polygon.size(); j = i++) {
+        if (((polygon[i].y > p.y) != (polygon[j].y > p.y)) &&
+            (p.x < (polygon[j].x - polygon[i].x) * (p.y-polygon[i].y) / (polygon[j].y-polygon[i].y) + polygon[i].x))
+           c = !c;
+      }
+      return c;
+}
+
+double TTTObserving::polygonArea(std::vector<point> polygon) {
+    int area = 0;
+    int poly = polygon.size();
+    for (int i = 0; i < poly; i++) area += (polygon[i].x * polygon[(i + 1) % poly].y);
+    for (int i = 0; i < poly; i++) area -= (polygon[(i + 1) % poly].x * polygon[i].y);
+    return std::abs(area) / 2;
+}
 
 
 void TTTObserving::getCellFromCoordinates(int x, int y, int *cellX, int *cellY){

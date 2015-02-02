@@ -45,6 +45,11 @@ private:
     double rectangleArea(point a, point b, point c, point d);
     bool intersect(point p, point lineStart, point lineEnd, point *intersection);
     void getCellFromCoordinates(int x, int y, int* cellX, int* cellY);
+
+    std::vector<std::vector<point> > xCoords;
+    std::vector<std::vector<point> > yCoords;
+    bool inPolygon(std::vector<point> polygon, point p);
+    double polygonArea(std::vector<point> polygon);
 };
 
 #endif // TTTOBSERVING_H
