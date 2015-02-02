@@ -16,7 +16,7 @@ struct point{
 
 };
 
-enum TTTOBSERVINGSTATE{ALIGNING, OBSERVING, WAITINGFORCONFIRMATION, CONFIRMATION, TEMP};
+enum TTTOBSERVINGSTATE{PREALIGN, ALIGNING, OBSERVING, WAITINGFORCONFIRMATION, CONFIRMATION, TEMP};
 
 class TTTObserving : public TicTacToeState
 {
@@ -33,7 +33,6 @@ private:
     int numberOfCurrentPlayerPieces;
     int newPiecePos[2];
     int timer;
-    TurnTo turnTo;
     TTTOBSERVINGSTATE state;
 
     std::vector<point> points;

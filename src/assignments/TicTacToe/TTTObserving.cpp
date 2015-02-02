@@ -3,14 +3,13 @@
 
 #define PI 3.1415
 
-TTTObserving::TTTObserving() : TicTacToeState(NULL, NULL), turnTo(NULL, NULL)
+TTTObserving::TTTObserving(): TicTacToeState(NULL, NULL)
 {
 }
 
 TTTObserving::TTTObserving(ArRobot *myRobot, TicTacToeAction *action, int numberOfCurrentPlayerPieces) :
-    TicTacToeState(myRobot, action),
-    turnTo(myRobot, action->getActs()){
-    state = ALIGNING;
+    TicTacToeState(myRobot, action){
+    state = PREALIGN;
     this->numberOfCurrentPlayerPieces = numberOfCurrentPlayerPieces;
     timer = 0;
     /*
@@ -96,7 +95,7 @@ TTTObserving::TTTObserving(ArRobot *myRobot, TicTacToeAction *action, int number
     ArPTZ* ptz = myRobot->getPTZ();
     ptz->tilt(-15.0);
 
-    myRobot->setHeading(150.0);
+    //myRobot->setHeading(150.0);
 }
 
 TTTObserving::~TTTObserving(){
@@ -110,6 +109,39 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
     bool b = action->getActs()->getBlob(1, 1, &piece);
 
     switch(state){
+    case PREALIGN: {
+        printf("#");
+
+        if (myRobot->getPose().getTh() < -5 || myRobot->getPose().getTh() > 5) {
+            myRobot->setHeading(0);
+            return;
+        }
+
+        ArLaser *myLaser = action->getLaser();
+        myLaser->lockDevice();
+        if (myLaser->isTryingToConnect()) {
+            printf("Laser trying to connect");
+        } else if (myLaser->isConnected()) {
+            std::vector<ArSensorReading> *myReadings = myLaser->getRawReadingsAsVector();
+            if (myReadings->size() > 180) {
+                int rotvel = (*myReadings)[95].getRange() - (*myReadings)[85].getRange();
+                if (rotvel < -10) rotvel = -10;
+                if (rotvel > 10) rotvel = 10;
+                if (rotvel * rotvel > 25) {
+                    myRobot->setRotVel(rotvel/2);
+                } else {
+                    myRobot->setRotVel(0);
+                    int angle = round(myRobot->getPose().getTh() / 90) * 90;
+                    ArPose newAngle(myRobot->getPose().getX(), myRobot->getPose().getY(), angle);
+                    myRobot->moveTo(newAngle);
+                    state = ALIGNING;
+                }
+            }
+        }
+        myLaser->unlockDevice();
+        break;
+    }
+
     case ALIGNING:
 
         printf("%f\n", myRobot->getPose().getTh());
@@ -183,8 +215,14 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
                 break;
             }
         }
-        action->getField()->field[blobFieldPos.x][blobFieldPos.y] = action->getField()->turn() % 2;
-        printf("Blob at %ix%i field: %ix%i\n", blobPos.x, blobPos.y, blobFieldPos.x, blobFieldPos.y);
+        int tmpX = blobFieldPos.x;
+        blobFieldPos.x = blobFieldPos.y;
+        blobFieldPos.y = 2 - tmpX;
+        if (blobFieldPos.x > -1) {
+            action->getField()->field[blobFieldPos.x][blobFieldPos.y] = action->getField()->turn() % 2;
+            printf("Blob at %ix%i field: %ix%i\n", blobPos.x, blobPos.y, blobFieldPos.x, blobFieldPos.y);
+            //action->setState(new TTTFetching(myRobot, action));
+        }
     }
     }
 

@@ -132,7 +132,7 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
                    myRobot->setRotVel(0.0);
                    state = LIFTING;
                 }else{
-                    myRobot->setVel(25.0);
+                    myRobot->setVel(50.0);
                 }
 
 
