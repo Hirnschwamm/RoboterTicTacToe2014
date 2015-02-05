@@ -12,7 +12,7 @@ TTTIdle::~TTTIdle(){
 
 void TTTIdle::fire(ArActionDesired* currentDesired){
 
-    action->setState(new TTTObserving(myRobot, action, 0));
+    action->setState(new TTTObserving(myRobot, action));
     return;
 
     if(robotStarts){
@@ -20,6 +20,6 @@ void TTTIdle::fire(ArActionDesired* currentDesired){
         action->setState(new TTTPlacing(myRobot, action));
     }else{
         printf("STATETRANSITION: IDLE--->OBSERVING\n");
-        action->setState(new TTTObserving(myRobot, action, 0));
+        action->setState(new TTTObserving(myRobot, action));
     }
 }

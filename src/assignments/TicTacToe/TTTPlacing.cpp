@@ -8,8 +8,8 @@ TTTPlacing::TTTPlacing() : TicTacToeState(NULL, NULL) {
 TTTPlacing::TTTPlacing(ArRobot* myRobot, TicTacToeAction* action) :
     TicTacToeState(myRobot, action){
         myState = 0;
-        action->getField()->aiTurn(1, &targetX, &targetY);
-
+        action->getField()->aiTurn(4, &targetX, &targetY);
+        action->getField()->field[targetX][targetY] = action->getField()->turn() % 2;
         gripper = new ArGripper(myRobot);
         //generate path
         start.x = myRobot->getPose().getX();

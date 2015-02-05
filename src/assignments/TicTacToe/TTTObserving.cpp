@@ -7,10 +7,9 @@ TTTObserving::TTTObserving(): TicTacToeState(NULL, NULL)
 {
 }
 
-TTTObserving::TTTObserving(ArRobot *myRobot, TicTacToeAction *action, int numberOfCurrentPlayerPieces) :
+TTTObserving::TTTObserving(ArRobot *myRobot, TicTacToeAction *action) :
     TicTacToeState(myRobot, action){
     state = PREALIGN;
-    this->numberOfCurrentPlayerPieces = numberOfCurrentPlayerPieces;
     timer = 0;
     /*
     point north = {382, 197};
@@ -103,10 +102,6 @@ TTTObserving::~TTTObserving(){
 }
 
 void TTTObserving::fire(ArActionDesired *currentDesired){
-    int newNumberOfPlayerPieces = action->getActs()->getNumBlobs(PLAYERPIECESCHANNEL);
-
-    ArACTSBlob piece;
-    bool b = action->getActs()->getBlob(1, 1, &piece);
 
     switch(state){
     case PREALIGN: {
@@ -150,38 +145,39 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
             myRobot->setHeading(150);
         }else{
             myRobot->setRotVel(0.0);
-            state = OBSERVING;
-        }
-        break;
-    case OBSERVING:
-        if(newNumberOfPlayerPieces > numberOfCurrentPlayerPieces){
-            ArACTSBlob piece;
-            action->getActs()->getBlob(PLAYERPIECESCHANNEL, newNumberOfPlayerPieces, &piece);
-
-            newPiecePos[0] = piece.getXCG();
-            newPiecePos[1] = piece.getYCG();
-
             state = WAITINGFORCONFIRMATION;
         }
         break;
     case WAITINGFORCONFIRMATION:{
-        ArACTSBlob piece;
-        bool b;
+        bool newBlobOnField = false;
+        bool gotBlob = false;
+        ArACTSBlob tempBlob;
 
-        for(int i = 0; i < newNumberOfPlayerPieces; i++){
-            b = action->getActs()->getBlob(PLAYERPIECESCHANNEL, newNumberOfPlayerPieces, &piece);
+
+        //Find the next blob that doesn't lay on an occupied field-position
+        for(int i = 1; i <= action->getActs()->getNumBlobs(PLAYERPIECESCHANNEL); i++){
+            gotBlob = action->getActs()->getBlob(PLAYERPIECESCHANNEL, i, &tempBlob);
+
+            if(!gotBlob){
+                printf("Didnt get Blob Nr. %d from %d amount of Blobs!\n", i, action->getActs()->getNumBlobs(PLAYERPIECESCHANNEL));
+                return;
+            }
+
+            point blobPos = {tempBlob.getXCG(), tempBlob.getYCG()};
+            getBlobFieldByScreenCoords(blobPos, &blobFieldPos);
+
+            //printf("Blobfieldpos for Blob nr. %d: %d|%d\n", i, blobFieldPos.x, blobFieldPos.y);
+            if(action->getField()->field[blobFieldPos.x][blobFieldPos.y] < 0){ //check if the field is occupied
+                newBlobOnField = true;
+                break;
+            }
+
         }
 
-        if(b){
-            printf("b = true\n");
-        }else{
-            printf("b = false\n");
-        }
-
-        if(b){
+        if(newBlobOnField){
             int margin = 40;
-            if(std::abs(piece.getXCG() - newPiecePos[0]) < margin &&
-                std::abs(piece.getYCG() - newPiecePos[1]) < margin   ){
+            if(std::abs(tempBlob.getXCG() - newPiecePos[0]) < margin &&
+               std::abs(tempBlob.getYCG() - newPiecePos[1]) < margin   ){
                 timer++;
             }else{
                 timer = 0;
@@ -195,29 +191,24 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
             //printf("%d\n", action->getActs()->getNumBlobs(PLAYERPIECESCHANNEL));
             //printf("%d\n", b);
 
-            newPiecePos[0] = piece.getXCG();
-            newPiecePos[1] = piece.getYCG();
+            newPiecePos[0] = tempBlob.getXCG();
+            newPiecePos[1] = tempBlob.getYCG();
 
+        }else{
+            timer = 0;
         }
+
         printf("WAITING: %d\n", timer);
     }   break;
     case CONFIRMATION:{
-        ArACTSBlob tempBlob;
-        point blobFieldPos;
-        for(int i = 1; i <= action->getActs()->getNumBlobs(PLAYERPIECESCHANNEL); i++){
-            action->getActs()->getBlob(PLAYERPIECESCHANNEL, i, &tempBlob);
-            point blobPos = {tempBlob.getXCG(), tempBlob.getYCG()};
-            getBlobFieldByScreenCoords(blobPos, &blobFieldPos);
-            if(action->getField()->field[blobFieldPos.x][blobFieldPos.y] < 0){
-                break;
-            }
 
-        }
-
+        //the found blob is a new piece and has to be noted in the TTT-Field
         if (blobFieldPos.x > -1) {
             action->getField()->field[blobFieldPos.x][blobFieldPos.y] = action->getField()->turn() % 2;
             printf("Blob field: %ix%i\n", blobFieldPos.x, blobFieldPos.y);
-            //action->setState(new TTTFetching(myRobot, action));
+            action->setState(new TTTFetching(myRobot, action));
+        }else{
+            state = WAITINGFORCONFIRMATION;
         }
     }
     }

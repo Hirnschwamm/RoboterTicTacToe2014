@@ -50,7 +50,7 @@ bool GoTo::fire(ArActionDesired *myDesired)
 
             int deltaHeading = ((int)(curPos.getTh() - targetHeading) + 360) % 360;
             if (deltaHeading > 180) deltaHeading = 360 - deltaHeading;
-            if (deltaHeading < 2) stateChange(1);
+            if (deltaHeading < 2) stateChange(2);
             if (stateTime > 30) stateChange(2);
             break;
         }

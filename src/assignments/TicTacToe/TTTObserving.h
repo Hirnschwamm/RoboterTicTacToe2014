@@ -22,7 +22,7 @@ class TTTObserving : public TicTacToeState
 {
 public:
     TTTObserving();
-    TTTObserving(ArRobot* myRobot, TicTacToeAction* action, int numberOfCurrentPlayerPieces);
+    TTTObserving(ArRobot* myRobot, TicTacToeAction* action);
     void printBlobInfo(ArACTSBlob &blob);
 
     ~TTTObserving();
@@ -30,7 +30,7 @@ public:
     void fire(ArActionDesired* currentDesired);
 
 private:
-    int numberOfCurrentPlayerPieces;
+    point blobFieldPos;
     int newPiecePos[2];
     int timer;
     TTTOBSERVINGSTATE state;
