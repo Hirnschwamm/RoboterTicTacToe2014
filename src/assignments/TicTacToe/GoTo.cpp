@@ -98,6 +98,47 @@ bool GoTo::fire(ArActionDesired *myDesired)
                     stateChange(1);
                 }
                 myRobot->setVel(targetVel);
+
+                int radius = (int)myRobot->getRobotRadius();
+
+                ArPose rpose = myRobot->getPose();
+                double obstacleDist = myRobot->checkRangeDevicesCurrentBox(0, -radius,
+                                    500, radius, &rpose);
+
+                if (obstacleDist < 250) { //obstacle
+                    myRobot->setVel(0);
+                    //check for human obstacle
+                    ArLaser *myLaser = action->getLaser();
+                    myLaser->lockDevice();
+                    std::vector<ArSensorReading> *myReadings = myLaser->getRawReadingsAsVector();
+                    if (myReadings->size() > 180) {
+                        bool blocked = false;
+                        int blockAmt = 0;
+                        for (int i = 45; i < 135; i++) {
+                            ArSensorReading curReading = (*myReadings)[i];
+                            ArSensorReading prevReading = (*myReadings)[i - 1];
+                            if (!blocked) {
+                                if (curReading.getRange() < prevReading.getRange() - 100) {
+                                    blocked = true;
+                                }
+                            } else {
+                                if (curReading.getRange() > prevReading.getRange() + 100) {
+                                    blocked = false;
+                                } else {
+                                    blockAmt++;
+                                }
+                            }
+                        }
+
+                        if (blockamt > 0 && blockAmt < 60) { //probably human
+                            //wait?
+                            printf("Human blocking path?\n");
+                        } else { //probably not human
+                            stateChange(4);
+                        }
+                    }
+                    myLaser->unlockDevice();
+                }
             }
             break;
         }
