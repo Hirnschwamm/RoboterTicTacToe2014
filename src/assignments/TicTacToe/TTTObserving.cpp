@@ -115,7 +115,7 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
         ArLaser *myLaser = action->getLaser();
         myLaser->lockDevice();
         if (myLaser->isTryingToConnect()) {
-            printf("Laser trying to connect");
+            printf("*");
         } else if (myLaser->isConnected()) {
             std::vector<ArSensorReading> *myReadings = myLaser->getRawReadingsAsVector();
             if (myReadings->size() > 180) {
