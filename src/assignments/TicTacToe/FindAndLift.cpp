@@ -37,13 +37,6 @@ void FindAndLift::deactivate(){
 
 bool FindAndLift::fire(ArActionDesired* currentDesired){
 
-
-    if(gripper->getBreakBeamState() == 3){
-       myRobot->setVel(0.0);
-       myRobot->setRotVel(0.0);
-       state = LIFTING;
-    }
-
     if (acts->isConnected()) {
 
         blob = getLowestBlob();
@@ -137,11 +130,6 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
                     myRobot->setVel(50.0);
                 }
 
-
-                if(acts->getNumBlobs(1) == 0 && ptz->getTilt() >= -25.0f){
-                    state = SEARCHING;
-                }
-
                 myLaser->unlockDevice();
             }break;
             case(LIFTING):{
@@ -152,6 +140,7 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
                 ticker++;
                 if(ticker > 50){
                     state = DONE;
+                    printf("LIFTING: %d ticks\n", ticker);
                 }
 
             }break;

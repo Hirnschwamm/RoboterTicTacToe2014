@@ -47,8 +47,8 @@ TTTPlacing::TTTPlacing(ArRobot* myRobot, TicTacToeAction* action) :
             pPos.x = end.x + (dPos.x * .7);
             pPos.y = end.y + (dPos.y * .7);
         } else {
-            pPos.x = end.x + (dPos.x * .1);
-            pPos.y = end.y + (dPos.y * .1);
+            pPos.x = end.x + (dPos.x * .15);
+            pPos.y = end.y + (dPos.y * .15);
         }
         //position for placeing
         finalPath.push_back(&pPos);

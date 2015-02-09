@@ -105,7 +105,7 @@ bool GoTo::fire(ArActionDesired *myDesired)
                 double obstacleDist = myRobot->checkRangeDevicesCurrentBox(0, -radius,
                                     500, radius, &rpose);
 
-                if (obstacleDist < 250) { //obstacle
+                if (obstacleDist < 400) { //obstacle
                     myRobot->setVel(0);
                     //check for human obstacle
                     ArLaser *myLaser = action->getLaser();
@@ -130,7 +130,7 @@ bool GoTo::fire(ArActionDesired *myDesired)
                             }
                         }
 
-                        if (blockamt > 0 && blockAmt < 60) { //probably human
+                        if (blockAmt > 0 && blockAmt < 80) { //probably human
                             //wait?
                             printf("Human blocking path?\n");
                         } else { //probably not human
@@ -170,7 +170,7 @@ bool GoTo::fire(ArActionDesired *myDesired)
             } else {
                 ArLog::log(ArLog::Normal, "reached %i/%i (%i) %ix%i", wpPos, path->size(), curWp->id, curWp->x, curWp->y);
                 wpPos++;
-                if (wpPos == path->size() - 1) {
+                if (wpPos == 1 || wpPos == path->size() - 1) {
                     //next wp
                     stateChange(-5);
                 } else {
