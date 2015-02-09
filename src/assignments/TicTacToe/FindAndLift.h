@@ -47,6 +47,8 @@ protected:
         return (focalLength * objectWidth) / objectWidth;
     }
 
+    ArACTSBlob getLowestBlob();
+
 };
 
 #endif // ACTSACTION_H

@@ -37,21 +37,24 @@ void FindAndLift::deactivate(){
 
 bool FindAndLift::fire(ArActionDesired* currentDesired){
 
-    //printChannel(1);
-    //return false;
+
+    if(gripper->getBreakBeamState() == 3){
+       myRobot->setVel(0.0);
+       myRobot->setRotVel(0.0);
+       state = LIFTING;
+    }
 
     if (acts->isConnected()) {
 
-        acts->getBlob(1, 1, &blob);
+        blob = getLowestBlob();
 
         switch(state){
             case(IDLE):{
                 myRobot->setVel(0.0);
                 myRobot->setRotVel(0.0);
-                //ptz->tilt(0.0);
                 gripper->gripperDeploy();
 
-                if(acts->getNumBlobs(1) > 0){
+                if(acts->getNumBlobs(ROBOTPIECESCHANNEL) > 0){
                     state = ADJUSTING;
 
                     printBlobInfo(blob);
@@ -75,7 +78,6 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
 
                 if(acts->getNumBlobs(1) > 0){
                     state = ADJUSTING;
-
                 }
 
                 printf("SEARCHING: TILT: %f\n", tilt);
@@ -164,6 +166,23 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
     }
 
     return false;
+}
+
+ArACTSBlob FindAndLift::getLowestBlob(){
+    ArACTSBlob returnBlob;
+    returnBlob.setYCG(100000);
+
+    ArACTSBlob tempBlob;
+    for(int i = 1; i <= acts->getNumBlobs(ROBOTPIECESCHANNEL); i++){
+        if(acts->getBlob(ROBOTPIECESCHANNEL, i, &tempBlob)){
+            if(tempBlob.getYCG() < returnBlob.getYCG()){
+                returnBlob = tempBlob;
+            }
+        }
+    }
+
+    return returnBlob;
+
 }
 
 void FindAndLift::printChannel(int channel){
