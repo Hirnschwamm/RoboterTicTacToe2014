@@ -130,7 +130,7 @@ bool GoTo::fire(ArActionDesired *myDesired)
                             }
                         }
 
-                        if (blockamt > 0 && blockAmt < 60) { //probably human
+                        if (blockAmt > 0 && blockAmt < 60) { //probably human
                             //wait?
                             printf("Human blocking path?\n");
                         } else { //probably not human
