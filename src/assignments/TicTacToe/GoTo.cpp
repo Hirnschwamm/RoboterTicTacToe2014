@@ -50,17 +50,60 @@ bool GoTo::fire(ArActionDesired *myDesired)
 
             int deltaHeading = ((int)(curPos.getTh() - targetHeading) + 360) % 360;
             if (deltaHeading > 180) deltaHeading = 360 - deltaHeading;
-            if (deltaHeading < 2) stateChange(2);
-            if (stateTime > 30) stateChange(2);
+            if (deltaHeading < 2) stateChange(1);
+            if (stateTime > 30) stateChange(1);
             break;
         }
 
-        case 1: { //check angle (unecessary / old code)
-            if (curPos.getTh() < targetHeading -2 || curPos.getTh() > targetHeading + 2) {
-                stateChange(-1);
-            } else {
+        case 1: { //correct angle
+            if (myRobot->getPose().getTh() + 10 < round(myRobot->getPose().getTh() / 90) * 90 ||
+                myRobot->getPose().getTh() - 10 > round(myRobot->getPose().getTh() / 90) * 90) {
                 stateChange(1);
-                initDirection = false;
+            } else {
+                ArLaser *myLaser = action->getLaser();
+                //system("clear");
+
+                myLaser->lockDevice();
+                if (myLaser->isTryingToConnect()) {
+                    printf("Laser trying to connect");
+                } else if (myLaser->isConnected()) {
+                    printf("Has Laser %i, %i, %i\n", myRobot->hasLaser(myLaser), myLaser->isTryingToConnect(), myLaser->isConnected());
+                    std::vector<ArSensorReading> *myReadings = myLaser->getRawReadingsAsVector();
+                    for (int i = 0; i < myReadings->size(); i++) {
+                        if (i % 5 > 0) continue;
+                        ArSensorReading curReading = (*myReadings)[i];
+                        if (i < 10) printf(" ");
+                        if (i < 100) printf(" ");
+                        //printf("%i reading: %i\n", i, (int)curReading.getRange());
+                    }
+
+                    if (myReadings->size() > 180) {
+                        int rotvel = (*myReadings)[95].getRange() - (*myReadings)[85].getRange();
+                        if (rotvel < -10) rotvel = -10;
+                        if (rotvel > 10) rotvel = 10;
+                        if (rotvel * rotvel > 25) {
+                            myRobot->setRotVel(rotvel/2);
+                        } else {
+                            ArPose rePose(myRobot->getPose().getX(), myRobot->getPose().getY(), 0);
+
+                            ArPose upRight = action->getMap()->getLineMaxPose();
+                            ArPose lowLeft = action->getMap()->getLineMinPose();
+
+                            myRobot->setRotVel(0);
+                            myRobot->setHeading(targetHeading);
+                            int angle = round(myRobot->getPose().getTh() / 90) * 90;
+                            rePose.setTh(angle);
+                            myRobot->moveTo(rePose);
+                            stateChange(1);
+                        }
+
+                    }
+
+                } else {
+                    myLaser->asyncConnect();
+                }
+
+                myLaser->unlockDevice();
             }
             break;
         }

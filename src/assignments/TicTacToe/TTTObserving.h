@@ -33,6 +33,7 @@ private:
     point blobFieldPos;
     int newPiecePos[2];
     int timer;
+    int lazerTime;
     TTTOBSERVINGSTATE state;
 
     std::vector<point> points;
