@@ -43,9 +43,6 @@ protected:
 
     int ticker;
 
-    int desiredLaserRange1;
-    int desiredLaserRange2;
-
     float getDistance(float objectWidth){
         return (focalLength * objectWidth) / objectWidth;
     }

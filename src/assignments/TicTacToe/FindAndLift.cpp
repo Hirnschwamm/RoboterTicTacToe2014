@@ -38,12 +38,6 @@ void FindAndLift::deactivate(){
 bool FindAndLift::fire(ArActionDesired* currentDesired){
 
 
-    if(gripper->getBreakBeamState() == 3){
-       myRobot->setVel(0.0);
-       myRobot->setRotVel(0.0);
-       state = LIFTING;
-    }
-
     if (acts->isConnected()) {
 
         blob = getLowestBlob();
@@ -95,15 +89,8 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
                 //Object is centered and ready to be approached
                 if(xcg > (halfScreenW - marginLeft) && xcg < (halfScreenW + marginRight)){
                     printf("FOUND OBJECT!\n");
-
-                    myLaser->lockDevice();
-                    std::vector<ArSensorReading>* myReadings = myLaser->getRawReadingsAsVector();
-                    if(myReadings->size() > 180){
-                        desiredLaserRange1 = (*myReadings)[95].getRange();
-                        desiredLaserRange2 = (*myReadings)[85].getRange();
-                        state = APPROACHING;
-                    }
-                    myLaser->unlockDevice();
+                    myRobot->setRotVel(0.0);
+                    state = APPROACHING;
                 //Object is not centered and robot position needs to be adjusted
                 }else if(xcg > (halfScreenW - marginLeft) && xcg > (halfScreenW + marginRight)){
                   printf("TURNING RIGHT\n");
@@ -117,25 +104,7 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
             case(APPROACHING):{
                 printf("APPROACHING!\n");
 
-                //printf("%f\n", myRobot->getRotVel());
-                myLaser->lockDevice();
-
-                std::vector<ArSensorReading>* myReadings = myLaser->getRawReadingsAsVector();
-
-                int desiredLaserDifference = desiredLaserRange1 - desiredLaserRange2;
-                if(myReadings->size() > 180){
-                    int rotVel = desiredLaserDifference - ((*myReadings)[95].getRange() - (*myReadings)[85].getRange());
-                    if(rotVel < -10){
-                        rotVel = -10;
-                    }
-                    if(rotVel > 10){
-                        rotVel = 10;
-                    }
-
-                    if (rotVel * rotVel > 25) {
-                        myRobot->setRotVel(rotVel/2);
-                    }
-                }
+                myRobot->setVel(50.0);
 
                 if(gripper->getBreakBeamState() == 3){
                    myRobot->setVel(0.0);
@@ -145,12 +114,16 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
                     myRobot->setVel(50.0);
                 }
 
+                int margin = 25;
+                int halfScreenW = SCREENWIDTH / 2;
+
+                if(blob.getXCG() > (halfScreenW - margin)){
+                    state = ADJUSTING;
+                }
 
                 if(acts->getNumBlobs(1) == 0 && ptz->getTilt() >= -25.0f){
                     state = SEARCHING;
                 }
-
-                myLaser->unlockDevice();
             }break;
             case(LIFTING):{
                 if(gripper->getPaddleState() != 3){
@@ -161,6 +134,8 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
                 if(ticker > 50){
                     state = DONE;
                 }
+
+                printf("LIFTING: %d ticks\n", ticker);
 
             }break;
             case(DONE):{
@@ -178,12 +153,12 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
 
 ArACTSBlob FindAndLift::getLowestBlob(){
     ArACTSBlob returnBlob;
-    returnBlob.setYCG(100000);
+    returnBlob.setYCG(0);
 
     ArACTSBlob tempBlob;
     for(int i = 1; i <= acts->getNumBlobs(ROBOTPIECESCHANNEL); i++){
         if(acts->getBlob(ROBOTPIECESCHANNEL, i, &tempBlob)){
-            if(tempBlob.getYCG() < returnBlob.getYCG()){
+            if(tempBlob.getYCG() > returnBlob.getYCG()){
                 returnBlob = tempBlob;
             }
         }
