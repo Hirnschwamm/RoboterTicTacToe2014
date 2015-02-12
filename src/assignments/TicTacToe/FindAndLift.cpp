@@ -37,7 +37,6 @@ void FindAndLift::deactivate(){
 
 bool FindAndLift::fire(ArActionDesired* currentDesired){
 
-
     if (acts->isConnected()) {
 
         blob = getLowestBlob();
@@ -113,7 +112,6 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
                 }else{
                     myRobot->setVel(50.0);
                 }
-
                 int margin = 25;
                 int halfScreenW = SCREENWIDTH / 2;
 
@@ -133,6 +131,7 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
                 ticker++;
                 if(ticker > 50){
                     state = DONE;
+                    printf("LIFTING: %d ticks\n", ticker);
                 }
 
                 printf("LIFTING: %d ticks\n", ticker);

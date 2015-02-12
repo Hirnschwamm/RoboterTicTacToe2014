@@ -43,7 +43,7 @@ void TTTSonarTest::fire(ArActionDesired *currentDesired) {
             printf("%i reading: %i\n", i, (int)curReading.getRange());
         }
 
-        if (myReadings->size() > 180) {
+        if (false && myReadings->size() > 180) {
             int rotvel = (*myReadings)[95].getRange() - (*myReadings)[85].getRange();
             if (rotvel < -10) rotvel = -10;
             if (rotvel > 10) rotvel = 10;
