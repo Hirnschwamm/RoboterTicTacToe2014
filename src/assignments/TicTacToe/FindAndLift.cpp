@@ -105,10 +105,6 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
                    state = LIFTING;
                 }
 
-                if(acts->getNumBlobs(PLAYERPIECESCHANNEL) <= 0){
-                    myRobot->setRotVel(0.0);
-                }
-
                 if(acts->getNumBlobs(PLAYERPIECESCHANNEL) == 0 && ptz->getTilt() >= -25.0f){
                     myRobot->setVel(0.0);
                     myRobot->setRotVel(0.0);
@@ -131,7 +127,7 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
                 int margin = 25;
                 int halfScreenW = SCREENWIDTH / 2;
 
-                if(blob.getXCG() > (halfScreenW + margin) || xcg < (halfScreenW - marginRight)){
+                if(blob.getXCG() > (halfScreenW + margin) || blob.getXCG() < (halfScreenW - margin)){
                     state = ADJUSTING;
                 }
 
