@@ -120,7 +120,7 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
             printf("◑ ◔\n");
             printf("╔═╗ IMMA FIRIN MAH LAZOR!\n");
             printf("║");
-            for (int i = 0; i < lazerTime; i += 3) {
+            for (int i = 0; i < lazerTime; i += 4) {
                 if (i < lazerTime - 50) {
                     printf(" ");
                     continue;
