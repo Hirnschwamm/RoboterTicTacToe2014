@@ -120,21 +120,21 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
             printf("◑ ◔\n");
             printf("╔═╗ IMMA FIRIN MAH LAZOR!\n");
             printf("║");
-            for (int i = 0; i < lazerTime; i += 2) {
+            for (int i = 0; i < lazerTime; i += 4) {
                 if (i < lazerTime - 50) {
                     printf(" ");
                     continue;
                 }
-                if (lazerTime - i < 20) {
+                if (lazerTime - i < 25) {
                     printf("▓");
-                } else if(lazerTime - i < 40) {
+                } else if(lazerTime - i < 50) {
                     printf("▒");
                 } else {
                     printf("░");
                 }
             }
             printf("\n");
-            printf("╚═╝");
+            printf("╚═╝\n");
         } else if (myLaser->isConnected()) {
             std::vector<ArSensorReading> *myReadings = myLaser->getRawReadingsAsVector();
             if (myReadings->size() > 180) {
