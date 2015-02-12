@@ -99,6 +99,22 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
                    myRobot->setRotVel(2.0);
                 }
 
+                if(gripper->getBreakBeamState() == 3){
+                   myRobot->setVel(0.0);
+                   myRobot->setRotVel(0.0);
+                   state = LIFTING;
+                }
+
+                if(acts->getNumBlobs(PLAYERPIECESCHANNEL) <= 0){
+                    myRobot->setRotVel(0.0);
+                }
+
+                if(acts->getNumBlobs(PLAYERPIECESCHANNEL) == 0 && ptz->getTilt() >= -25.0f){
+                    myRobot->setVel(0.0);
+                    myRobot->setRotVel(0.0);
+                    state = SEARCHING;
+                }
+
             }break;
             case(APPROACHING):{
                 printf("APPROACHING!\n");
@@ -115,7 +131,7 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
                 int margin = 25;
                 int halfScreenW = SCREENWIDTH / 2;
 
-                if(blob.getXCG() > (halfScreenW - margin)){
+                if(blob.getXCG() > (halfScreenW + margin) || xcg < (halfScreenW - marginRight)){
                     state = ADJUSTING;
                 }
 
