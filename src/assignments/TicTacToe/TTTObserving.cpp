@@ -11,6 +11,7 @@ TTTObserving::TTTObserving(ArRobot *myRobot, TicTacToeAction *action) :
     TicTacToeState(myRobot, action){
     state = PREALIGN;
     timer = 0;
+    lazerTime = 0;
     /*
     point north = {382, 197};
     points.push_back(north);
@@ -105,8 +106,6 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
 
     switch(state){
     case PREALIGN: {
-        printf("#");
-
         if (myRobot->getPose().getTh() < -5 || myRobot->getPose().getTh() > 5) {
             myRobot->setHeading(0);
             return;
@@ -115,7 +114,27 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
         ArLaser *myLaser = action->getLaser();
         myLaser->lockDevice();
         if (myLaser->isTryingToConnect()) {
-            printf("*");
+            lazerTime++;
+            system("clear");
+            printf("\n\n");
+            printf("◑ ◔\n");
+            printf("╔═╗ IMMA FIRIN MAH LAZOR!\n");
+            printf("║");
+            for (int i = 0; i < lazerTime; i += 2) {
+                if (i < lazerTime - 50) {
+                    printf(" ");
+                    continue;
+                }
+                if (lazerTime - i < 20) {
+                    printf("▓");
+                } else if(lazerTime - i < 40) {
+                    printf("▒");
+                } else {
+                    printf("░");
+                }
+            }
+            printf("\n");
+            printf("╚═╝");
         } else if (myLaser->isConnected()) {
             std::vector<ArSensorReading> *myReadings = myLaser->getRawReadingsAsVector();
             if (myReadings->size() > 180) {
