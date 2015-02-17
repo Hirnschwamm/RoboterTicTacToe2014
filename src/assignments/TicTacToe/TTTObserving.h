@@ -6,6 +6,8 @@
 #include <TurnTo.h>
 #include <math.h>
 
+#include"TTTGameOver.h"
+
 #define CONFIRMATIONTIME 30
 #define FOCALLENGTH 822
 #define PLAYERPIECEWIDTH 11
