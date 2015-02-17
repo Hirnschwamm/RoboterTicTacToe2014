@@ -121,13 +121,13 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
             printf("╔═╗ IMMA FIRIN MAH LAZOR!\n");
             printf("║");
             for (int i = 0; i < lazerTime; i += 4) {
-                if (i < lazerTime - 50) {
+                if (i < lazerTime - 75) {
                     printf(" ");
                     continue;
                 }
-                if (lazerTime - i < 25) {
+                if (lazerTime - i < 40) {
                     printf("▓");
-                } else if(lazerTime - i < 50) {
+                } else if(lazerTime - i < 60) {
                     printf("▒");
                 } else {
                     printf("░");

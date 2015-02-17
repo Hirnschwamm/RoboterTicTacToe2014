@@ -38,8 +38,8 @@ void PathUtil::init(ArMap *map, std::vector<WayPoint*> *all1d) {
         int yPos = (int) floor(tmpWP->id / 3);
         if (xPos != 1 || yPos != 1) tmpWP->blocked = false;
 
-        if (xPos == 0) tmpWP->y += distToField;
-        if (xPos == 2) tmpWP->y -= distToField;
+        if (xPos == 0) tmpWP->y += distToField * 1.5;
+        if (xPos == 2) tmpWP->y -= distToField * 1.5;
         if (yPos == 0) tmpWP->x -= distToField;
         if (yPos == 2) tmpWP->x += distToField;
 
