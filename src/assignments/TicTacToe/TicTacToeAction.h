@@ -38,6 +38,8 @@ public:
 
     ArPose getStartPose();
 
+    bool getRobotStarts();
+
     void printBlobInfo(ArACTSBlob &blob);
 
 private:

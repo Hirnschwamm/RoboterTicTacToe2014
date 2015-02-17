@@ -76,6 +76,10 @@ ArPose TicTacToeAction::getStartPose(){
     return startPose;
 }
 
+bool TicTacToeAction::getRobotStarts(){
+    return robotStarts;
+}
+
 std::vector<std::vector<WayPoint> >* TicTacToeAction::getWaypoints(){
     return waypoints;
 }

@@ -104,6 +104,17 @@ TTTObserving::~TTTObserving(){
 
 void TTTObserving::fire(ArActionDesired *currentDesired){
 
+    if(action->getField()->won(action->getRobotStarts())){
+        action->setState(new TTTGameOver(myRobot, action, ROBOTWIN));
+        return;
+    }else if(action->getField()->won(!action->getRobotStarts())){
+        action->setState(new TTTGameOver(myRobot, action, PLAYERWIN));
+        return;
+    }else if(action->getField()->turn() >= 9){
+        action->setState(new TTTGameOver(myRobot, action, DRAW));
+        return;
+    }
+
     switch(state){
     case PREALIGN: {
         if (myRobot->getPose().getTh() < -5 || myRobot->getPose().getTh() > 5) {
