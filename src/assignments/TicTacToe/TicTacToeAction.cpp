@@ -2,13 +2,17 @@
 #include <TTTIdle.h>
 
 
-TicTacToeAction::TicTacToeAction(bool robotStarts, std::vector<std::vector<WayPoint> >* waypoints, ArMap *map) : ArAction("TicTacToeAction", "A game of Tic Tac Toe")
+TicTacToeAction::TicTacToeAction(std::vector<std::vector<WayPoint> >* waypoints, ArMap *map, char* startingPlayer, char* difficulty) : ArAction("TicTacToeAction", "A game of Tic Tac Toe")
 {
     state = NULL;
     this->startPose = ArPose(0, 0, 0);
     this->robotStarts = robotStarts;
     this->waypoints = waypoints;
     this->map = map;
+    this->robotStarts = std::string("r").compare(startingPlayer) == 0;
+    this->difficulty = atoi(difficulty) + 1;
+
+    printf("diff: %d\n", this->difficulty);
 }
 
 TicTacToeAction::~TicTacToeAction(){
@@ -78,6 +82,10 @@ ArPose TicTacToeAction::getStartPose(){
 
 bool TicTacToeAction::getRobotStarts(){
     return robotStarts;
+}
+
+int TicTacToeAction::getDifficulty(){
+    return difficulty;
 }
 
 std::vector<std::vector<WayPoint> >* TicTacToeAction::getWaypoints(){

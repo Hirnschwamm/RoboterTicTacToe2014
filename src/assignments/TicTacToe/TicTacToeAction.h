@@ -17,7 +17,7 @@ class TicTacToeState;
 class TicTacToeAction : public ArAction
 {
 public:
-    TicTacToeAction(bool robotStarts, std::vector<std::vector<WayPoint> >* waypoints, ArMap *map);
+    TicTacToeAction(std::vector<std::vector<WayPoint> >* waypoints, ArMap *map, char* startingPlayer, char* difficulty);
     ~TicTacToeAction();
 
     virtual void activate();
@@ -39,11 +39,13 @@ public:
     ArPose getStartPose();
 
     bool getRobotStarts();
+    int getDifficulty();
 
     void printBlobInfo(ArACTSBlob &blob);
 
 private:
     bool robotStarts;
+    int difficulty;
 
     ArPose startPose;
 

@@ -15,8 +15,17 @@ int main(int argc, char **argv) {
     /* initialize random seed: */
     srand (time(NULL));
 
+    char* startPlayer = *(argv + 1);
+    char* difficulty = *(argv + 2);
+
+    printf("lololo: ");
+    printf(startPlayer);
+    printf(difficulty);
+    printf("\n");
+
+
     DefaultRobotServer server;
-    server.init(argc, argv);
+    server.init(argc - 2, argv + 2);
 
     ArMap* map = server.getMap();
     ArRobot *robot = server.getRobot();
@@ -59,8 +68,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    TicTacToeAction tictactoeaction(false, &wayPoints, map);
-
+    TicTacToeAction tictactoeaction(&wayPoints, map, startPlayer, difficulty);
     server.addAction(tictactoeaction);
     tictactoeaction.activate();
     printf("run!\n");
