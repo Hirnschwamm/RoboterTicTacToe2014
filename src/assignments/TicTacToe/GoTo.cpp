@@ -291,11 +291,14 @@ bool GoTo::fire(ArActionDesired *myDesired)
 
                         }
                         //printf("My Pose: %ix%i / %i; %i\n", (int)rePose.getX(), (int)rePose.getY(), (int)rePose.getTh(), angle);
-                        myRobot->moveTo(rePose);
-                        printf("Angle set to %i is now %i\n", (int)rePose.getTh(), (int)myRobot->getPose().getTh());
-                        stateChange(-6);
+                        if (myRobot->getPose().findDistanceTo(rePose) < accuracy) {
+                            myRobot->moveTo(rePose);
+                            printf("Angle set to %i is now %i\n", (int)rePose.getTh(), (int)myRobot->getPose().getTh());
+                            stateChange(-6);
+                        } else {
+                            printf("Someone is in the way.\n");
+                        }
                     }
-
                 }
 
             } else {

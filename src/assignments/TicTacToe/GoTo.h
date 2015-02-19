@@ -22,6 +22,7 @@ protected:
     int state;
     int stateTime;
     int wpPos;
+    int accuracy = 1000;
     ArRobot *myRobot;
     TicTacToeAction *action;
     void stateChange(int change);

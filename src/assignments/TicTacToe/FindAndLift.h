@@ -8,7 +8,6 @@
 #include<ArSonyPTZ.h>
 
 #define SCREENWIDTH 720
-#define SCREENHEIGHT 420
 
 #define focalLength 822
 
