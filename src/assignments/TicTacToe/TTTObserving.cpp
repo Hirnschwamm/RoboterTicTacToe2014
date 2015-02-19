@@ -12,6 +12,7 @@ TTTObserving::TTTObserving(ArRobot *myRobot, TicTacToeAction *action) :
     state = PREALIGN;
     timer = 0;
     lazerTime = 0;
+    preAlignFix = 0;
     /*
     point north = {382, 197};
     points.push_back(north);
@@ -106,7 +107,8 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
 
     switch(state){
     case PREALIGN: {
-        if (myRobot->getPose().getTh() < -5 || myRobot->getPose().getTh() > 5) {
+        preAlignFix++;
+        if ((myRobot->getPose().getTh() < -5 || myRobot->getPose().getTh() > 5) && preAlignFix < 200) {
             myRobot->setHeading(0);
             return;
         }
@@ -121,13 +123,13 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
             printf("╔═╗ IMMA FIRIN MAH LAZOR!\n");
             printf("║");
             for (int i = 0; i < lazerTime; i += 4) {
-                if (i < lazerTime - 75) {
+                if (i < lazerTime - 100) {
                     printf(" ");
                     continue;
                 }
-                if (lazerTime - i < 40) {
+                if (lazerTime - i < 60) {
                     printf("▓");
-                } else if(lazerTime - i < 60) {
+                } else if(lazerTime - i < 90) {
                     printf("▒");
                 } else {
                     printf("░");
@@ -225,14 +227,19 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
             action->getField()->field[blobFieldPos.x][blobFieldPos.y] = action->getField()->turn() % 2;
             printf("Blob field: %ix%i\n", blobFieldPos.x, blobFieldPos.y);
 
+            action->getField()->debugPrint();
+
+            printf("\nwon: %d\n", action->getField()->won(action->getRobotStarts()));
+
             if(action->getField()->won(action->getRobotStarts())){
-                action->setState(new TTTGameOver(myRobot, action, ROBOTWIN));
+                printf("Win test: Robot won! %d\n", action->getField()->won(action->getRobotStarts()));
+                action->setState(new TTTGameOver(myRobot, action, PLAYERWIN));
                 return;
             }else if(action->getField()->turn() >= 9){
+                printf("Win test: 9 turns! %d\n", action->getField()->turn());
                 action->setState(new TTTGameOver(myRobot, action, DRAW));
                 return;
             }
-
             action->setState(new TTTFetching(myRobot, action));
         }else{
             state = WAITINGFORCONFIRMATION;

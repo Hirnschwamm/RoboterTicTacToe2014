@@ -13,7 +13,7 @@ void PathUtil::init(ArMap *map, std::vector<WayPoint*> *all1d) {
     std::list<ArMapObject*> mapPoints = map->findMapObjectsOfType("goal");
     std::list<ArMapObject*>::const_iterator iterator;
 
-    int distToField = 200;
+    int distToField = 300;
     std::vector<std::vector<WayPoint> > tmpWayPoints;
 
     //init TTT field
@@ -38,10 +38,10 @@ void PathUtil::init(ArMap *map, std::vector<WayPoint*> *all1d) {
         int yPos = (int) floor(tmpWP->id / 3);
         if (xPos != 1 || yPos != 1) tmpWP->blocked = false;
 
-        if (xPos == 0) tmpWP->y += distToField * 1.5;
-        if (xPos == 2) tmpWP->y -= distToField * 1.5;
-        if (yPos == 0) tmpWP->x -= distToField;
-        if (yPos == 2) tmpWP->x += distToField;
+        if (xPos == 0) tmpWP->y += distToField;
+        if (xPos == 2) tmpWP->y -= distToField;
+        if (yPos == 0) tmpWP->x -= (distToField * 4) / 3;
+        if (yPos == 2) tmpWP->x += (distToField * 4) / 3;
 
         tmpWayPoints[xPos][yPos] = *tmpWP;
         printf("Goal %i: %ix%i\n", (int) curObj->getName()[0] - '0', (int) curObj->getPose().getX(), (int) curObj->getPose().getY());

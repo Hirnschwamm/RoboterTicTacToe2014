@@ -115,15 +115,16 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
             case(APPROACHING):{
                 printf("APPROACHING!\n");
 
-                myRobot->setVel(50.0);
+                myRobot->setVel(100.0);
 
                 if(gripper->getBreakBeamState() == 3){
                    myRobot->setVel(0.0);
                    myRobot->setRotVel(0.0);
                    state = LIFTING;
                 }else{
-                    myRobot->setVel(50.0);
+                    myRobot->setVel(100.0);
                 }
+
                 int margin = 25;
                 int halfScreenW = SCREENWIDTH / 2;
 
@@ -152,6 +153,44 @@ bool FindAndLift::fire(ArActionDesired* currentDesired){
             case(DONE):{
                 return true;
             }break;
+        }    
+        int radius = (int)myRobot->getRobotRadius();
+
+        ArPose rpose = myRobot->getPose();
+        double obstacleDist = myRobot->checkRangeDevicesCurrentBox(0, -radius,
+                            500, radius, &rpose);
+
+        if (obstacleDist < 400) { //obstacle
+            myRobot->setVel(0);
+            //check for human obstacle
+            ArLaser *myLaser = action->getLaser();
+            myLaser->lockDevice();
+            std::vector<ArSensorReading> *myReadings = myLaser->getRawReadingsAsVector();
+            if (myReadings->size() > 180) {
+                bool blocked = false;
+                int blockAmt = 0;
+                for (int i = 45; i < 135; i++) {
+                    ArSensorReading curReading = (*myReadings)[i];
+                    ArSensorReading prevReading = (*myReadings)[i - 1];
+                    if (!blocked) {
+                        if (curReading.getRange() < prevReading.getRange() - 100) {
+                            blocked = true;
+                        }
+                    } else {
+                        if (curReading.getRange() > prevReading.getRange() + 100) {
+                            blocked = false;
+                        } else {
+                            blockAmt++;
+                        }
+                    }
+                }
+
+                if (blockAmt > 0 && blockAmt < 80) { //probably human
+                    //wait?
+                    printf("Human blocking path?\n");
+                }
+            }
+            myLaser->unlockDevice();
         }
 
     } else {

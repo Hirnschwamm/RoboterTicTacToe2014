@@ -2,7 +2,8 @@
 #include <TTTIdle.h>
 
 
-TicTacToeAction::TicTacToeAction(std::vector<std::vector<WayPoint> >* waypoints, ArMap *map, char* startingPlayer, char* difficulty) : ArAction("TicTacToeAction", "A game of Tic Tac Toe")
+TicTacToeAction::TicTacToeAction(std::vector<std::vector<WayPoint> >* waypoints, ArMap *map, char* startingPlayer, char* difficulty)
+    : ArAction("TicTacToeAction", "A game of Tic Tac Toe")
 {
     state = NULL;
     this->startPose = ArPose(0, 0, 0);
@@ -11,6 +12,12 @@ TicTacToeAction::TicTacToeAction(std::vector<std::vector<WayPoint> >* waypoints,
     this->map = map;
     this->robotStarts = std::string("r").compare(startingPlayer) == 0;
     this->difficulty = atoi(difficulty) + 1;
+
+    /*this->field.field[0][2] = 0;
+    this->field.field[1][1] = 0;
+
+    this->field.field[0][0] = 1;
+    this->field.field[0][1] = 1;*/
 
     printf("diff: %d\n", this->difficulty);
 }
@@ -28,7 +35,7 @@ void TicTacToeAction::activate(){
     myLaser = myRobot->findLaser(1);
     myLaser->asyncConnect();
 
-    setState(new TTTIdle(this->myRobot, this, robotStarts));
+    setState(new TTTIdle(this->myRobot, this));
     ArAction::activate();
 }
 

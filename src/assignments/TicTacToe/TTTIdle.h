@@ -7,14 +7,12 @@
 class TTTIdle : public TicTacToeState
 {
 public:
-    TTTIdle(ArRobot* myRobot, TicTacToeAction* action, bool robotStarts);
+    TTTIdle(ArRobot* myRobot, TicTacToeAction* action);
     ~TTTIdle();
 
     void fire(ArActionDesired* currentDesired);
 
 private:
-    bool robotStarts;
-    int test;
 };
 
 #endif // TTTIDLESTATE_H
