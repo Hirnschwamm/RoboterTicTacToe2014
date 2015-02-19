@@ -42,6 +42,15 @@ void TTTReturning::fire(ArActionDesired *currentDesired){
 
     if(goTo->fire(currentDesired)){
         printf("STATETRANSITION: RETURNING--->OBSERVING\n");
+
+        if(action->getField()->won(!action->getRobotStarts())){
+            action->setState(new TTTGameOver(myRobot, action, PLAYERWIN));
+            return;
+        }else if(action->getField()->turn() >= 9){
+                    action->setState(new TTTGameOver(myRobot, action, DRAW));
+                    return;
+        }
+
         action->setState(new TTTObserving(myRobot, action));
     }
 }

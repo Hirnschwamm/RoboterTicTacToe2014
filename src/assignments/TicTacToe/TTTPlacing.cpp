@@ -61,7 +61,7 @@ TTTPlacing::TTTPlacing(ArRobot* myRobot, TicTacToeAction* action) :
 }
 
 void TTTPlacing::fire(ArActionDesired *currentDesired){
-    printf("p(%i)>", ticks);
+    //printf("p(%i)>", ticks);
     switch(myState) {
     case 0: { //getting in position for placeing
         if (myGoto->fire(currentDesired)) myState++;

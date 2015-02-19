@@ -104,17 +104,6 @@ TTTObserving::~TTTObserving(){
 
 void TTTObserving::fire(ArActionDesired *currentDesired){
 
-    if(action->getField()->won(action->getRobotStarts())){
-        action->setState(new TTTGameOver(myRobot, action, ROBOTWIN));
-        return;
-    }else if(action->getField()->won(!action->getRobotStarts())){
-        action->setState(new TTTGameOver(myRobot, action, PLAYERWIN));
-        return;
-    }else if(action->getField()->turn() >= 9){
-        action->setState(new TTTGameOver(myRobot, action, DRAW));
-        return;
-    }
-
     switch(state){
     case PREALIGN: {
         if (myRobot->getPose().getTh() < -5 || myRobot->getPose().getTh() > 5) {
@@ -231,11 +220,19 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
         printf("WAITING: %d\n", timer);
     }   break;
     case CONFIRMATION:{
-
         //the found blob is a new piece and has to be noted in the TTT-Field
         if (blobFieldPos.x > -1) {
             action->getField()->field[blobFieldPos.x][blobFieldPos.y] = action->getField()->turn() % 2;
             printf("Blob field: %ix%i\n", blobFieldPos.x, blobFieldPos.y);
+
+            if(action->getField()->won(action->getRobotStarts())){
+                action->setState(new TTTGameOver(myRobot, action, ROBOTWIN));
+                return;
+            }else if(action->getField()->turn() >= 9){
+                action->setState(new TTTGameOver(myRobot, action, DRAW));
+                return;
+            }
+
             action->setState(new TTTFetching(myRobot, action));
         }else{
             state = WAITINGFORCONFIRMATION;
