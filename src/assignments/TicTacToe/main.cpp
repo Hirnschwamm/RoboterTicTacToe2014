@@ -18,12 +18,6 @@ int main(int argc, char **argv) {
     char* startPlayer = *(argv + 1);
     char* difficulty = *(argv + 2);
 
-    printf("lololo: ");
-    printf(startPlayer);
-    printf(difficulty);
-    printf("\n");
-
-
     DefaultRobotServer server;
     server.init(argc - 2, argv + 2);
 

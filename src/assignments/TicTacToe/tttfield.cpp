@@ -316,7 +316,7 @@ void TTTField::debugPrint()
             if (x < 2) printf(" | ");
         }
         printf("\n");
-        if (y < 2) printf("---------\n");
+        if (y > 0) printf("---------\n");
     }
 }
 

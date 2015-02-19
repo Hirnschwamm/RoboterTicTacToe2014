@@ -2,9 +2,8 @@
 #include <TTTFetching.h>
 #include <TTTSonarTest.h>
 
-TTTIdle::TTTIdle(ArRobot* myRobot, TicTacToeAction* action, bool robotStarts) : TicTacToeState(myRobot, action){
-    this->robotStarts = robotStarts;
-    test = 0;
+TTTIdle::TTTIdle(ArRobot* myRobot, TicTacToeAction* action) : TicTacToeState(myRobot, action){
+
 }
 
 TTTIdle::~TTTIdle(){
@@ -12,10 +11,7 @@ TTTIdle::~TTTIdle(){
 
 void TTTIdle::fire(ArActionDesired* currentDesired){
 
-    action->setState(new TTTObserving(myRobot, action));
-    return;
-
-    if(robotStarts){
+    if(action->getRobotStarts()){
         printf("STATETRANSITION: IDLE--->FETCHING\n");
         action->setState(new TTTPlacing(myRobot, action));
     }else{

@@ -36,6 +36,7 @@ private:
     int newPiecePos[2];
     int timer;
     int lazerTime;
+    int preAlignFix;
     TTTOBSERVINGSTATE state;
 
     std::vector<point> points;
