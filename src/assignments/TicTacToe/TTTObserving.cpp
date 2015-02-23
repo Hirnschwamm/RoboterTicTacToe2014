@@ -108,7 +108,7 @@ void TTTObserving::fire(ArActionDesired *currentDesired){
     switch(state){
     case PREALIGN: {
         preAlignFix++;
-        if ((myRobot->getPose().getTh() < -5 || myRobot->getPose().getTh() > 5) && preAlignFix < 200) {
+        if (preAlignFix < 20) {
             myRobot->setHeading(0);
             return;
         }

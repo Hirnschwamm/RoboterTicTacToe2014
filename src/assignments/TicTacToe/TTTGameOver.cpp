@@ -6,6 +6,9 @@ TTTGameOver::TTTGameOver() : TicTacToeState(NULL, NULL)
 
 TTTGameOver::TTTGameOver(ArRobot *myRobot, TicTacToeAction *action, GAMEOVERSTATE gameResult) :
     TicTacToeState(myRobot, action){
+
+    myRobot->setHeading(0.0);
+
     system("clear");
     printf("##################################\n");
     printf("##################################\n\n");

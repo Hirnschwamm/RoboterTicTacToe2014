@@ -27,7 +27,7 @@ bool GoTo::fire(ArActionDesired *myDesired)
 
     //double targetHeading = acos((curPos.getY() - target.getY()) / dist)  * (180 / M_PI);
 
-    if (stateTime % 5 == 0) ArLog::log(ArLog::Normal, "I'm at(%i): %ix%i; %i / %i; %ix%i", state, (int) curPos.getX(), (int) curPos.getY(), (int) curPos.getTh(), (int) targetHeading, (int) target.getX(), (int) target.getY());
+    //if (stateTime % 5 == 0) ArLog::log(ArLog::Normal, "I'm at(%i): %ix%i; %i / %i; %ix%i", state, (int) curPos.getX(), (int) curPos.getY(), (int) curPos.getTh(), (int) targetHeading, (int) target.getX(), (int) target.getY());
 
 
     switch(state) {
@@ -76,8 +76,8 @@ bool GoTo::fire(ArActionDesired *myDesired)
 
                 if (myReadings->size() > 180) {
                     int rotvel = (*myReadings)[95].getRange() - (*myReadings)[85].getRange();
-                    if (rotvel < -10) rotvel = -10;
-                    if (rotvel > 10) rotvel = 10;
+                    if (rotvel < -40) rotvel = -40;
+                    if (rotvel > 40) rotvel = 40;
                     if (rotvel * rotvel > 25) {
                         myRobot->setRotVel(rotvel/2);
                     } else {
@@ -242,8 +242,8 @@ bool GoTo::fire(ArActionDesired *myDesired)
 
                 if (myReadings->size() > 180) {
                     int rotvel = (*myReadings)[95].getRange() - (*myReadings)[85].getRange();
-                    if (rotvel < -10) rotvel = -10;
-                    if (rotvel > 10) rotvel = 10;
+                    if (rotvel < -40) rotvel = -40;
+                    if (rotvel > 40) rotvel = 40;
                     if (rotvel * rotvel > 25) {
                         myRobot->setRotVel(rotvel/2);
                     } else {

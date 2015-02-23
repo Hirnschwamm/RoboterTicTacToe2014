@@ -13,7 +13,7 @@ void TTTIdle::fire(ArActionDesired* currentDesired){
 
     if(action->getRobotStarts()){
         printf("STATETRANSITION: IDLE--->FETCHING\n");
-        action->setState(new TTTPlacing(myRobot, action));
+        action->setState(new TTTFetching(myRobot, action));
     }else{
         printf("STATETRANSITION: IDLE--->OBSERVING\n");
         action->setState(new TTTObserving(myRobot, action));
