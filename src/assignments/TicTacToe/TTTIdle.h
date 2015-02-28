@@ -3,6 +3,7 @@
 
 #include<TicTacToeState.h>
 #include<TTTFetching.h>
+#include<ArKeyHandler.h>
 
 class TTTIdle : public TicTacToeState
 {
@@ -13,6 +14,13 @@ public:
     void fire(ArActionDesired* currentDesired);
 
 private:
+    ArKeyHandler* handler;
+
+    GoTo* goTo;
+    std::vector<WayPoint*> path;
+
+    static bool robotReady;
+    static void setReadyCallback();
 };
 
-#endif // TTTIDLESTATE_H
+#endif TTTIDLESTATE_H
